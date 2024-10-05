@@ -1,22 +1,16 @@
 // Dice.jsx
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDrag } from "react-dnd";
 import "./Dice.css";
 
-const Dice = ({ id, value }) => {
+const Dice = ({ id, value, isRed }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "DICE",
-    item: { id, value },
+    item: { id, value, isRed },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
   }));
-  const [isRolling, setIsRolling] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsRolling(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
 
   const renderDots = (value) => {
     const positions = {
@@ -43,10 +37,12 @@ const Dice = ({ id, value }) => {
   return (
     <div
       ref={drag}
-      className={`dice ${isRolling ? "rolling" : ""}`}
-      style={{ opacity: isDragging ? 0.5 : 1 }}
+      className={`dice ${isRed ? "red-dice" : ""}`}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+      }}
     >
-      {!isRolling && renderDots(value)}
+      {renderDots(value)}
     </div>
   );
 };

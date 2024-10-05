@@ -7,9 +7,9 @@ const PlayerCard = ({ playerHealth, onPlayerSlotDrop }) => {
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: "DICE",
-      canDrop: (item) => item.value === 5,
+      canDrop: () => true, // Accept any dice
       drop: (item) => {
-        onPlayerSlotDrop(item.id);
+        onPlayerSlotDrop(item.id, item.value, item.isRed);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
@@ -37,7 +37,7 @@ const PlayerCard = ({ playerHealth, onPlayerSlotDrop }) => {
           !canDrop && isOver ? "invalid" : ""
         }`}
       >
-        =5
+        =5 / Red Dice
       </div>
     </div>
   );

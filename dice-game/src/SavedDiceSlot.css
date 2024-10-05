@@ -1,0 +1,31 @@
+/* SavedDiceSlot.css */
+
+.saved-dice-slot {
+  width: 60px;
+  height: 60px;
+  border: 2px dashed #555;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-right: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer; /* Add cursor pointer for clickable slots */
+}
+
+.saved-dice-slot:last-child {
+  margin-right: 0;
+}
+
+.saved-dice-slot.hover {
+  background-color: #e0ffe0;
+}
+
+.saved-dice-slot.invalid {
+  background-color: #ffe0e0;
+}
+
+.saved-dice-slot .dice {
+  margin: 0;
+}

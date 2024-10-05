@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Dice from "./Dice";
 import EnemyCard from "./EnemyCard";
 import PlayerCard from "./PlayerCard";
+import SavedDiceSlot from "./SavedDiceSlot";
 import Shop from "./Shop";
 import enemyData from "./enemyData";
 import { v4 as uuidv4 } from "uuid";
@@ -19,6 +20,9 @@ const Game = () => {
     extraDice: 0,
     damageReduction: 0,
   });
+
+  const [savedDice, setSavedDice] = useState([null, null, null]); // Fixed array of 3 slots
+  const [rollingDice, setRollingDice] = useState([]);
 
   // Initialize enemies or show shop at the start
   useEffect(() => {
@@ -65,10 +69,45 @@ const Game = () => {
       const newDiceValues = [];
       for (let i = 0; i < totalDice; i++) {
         const value = Math.floor(Math.random() * 6) + 1;
-        newDiceValues.push({ id: uuidv4(), value });
+        const isRed = Math.random() < 0.1; // 10% chance for red dice
+        newDiceValues.push({ id: uuidv4(), value, isRed });
       }
-      setDiceValues(newDiceValues);
+      setRollingDice(newDiceValues);
       setDiceThrown(true);
+
+      // Simulate dice rolling animation
+      setTimeout(() => {
+        setDiceValues((prevDiceValues) => [
+          ...prevDiceValues,
+          ...newDiceValues,
+        ]);
+        setRollingDice([]);
+      }, 1000); // Duration of the rolling animation
+    }
+  };
+
+  const handleSaveDice = (diceId, slotIndex) => {
+    setDiceValues((prevDiceValues) => {
+      const diceToSave = prevDiceValues.find((dice) => dice.id === diceId);
+      if (!diceToSave) return prevDiceValues;
+      setSavedDice((prevSavedDice) => {
+        const newSavedDice = [...prevSavedDice];
+        newSavedDice[slotIndex] = diceToSave;
+        return newSavedDice;
+      });
+      return prevDiceValues.filter((dice) => dice.id !== diceId);
+    });
+  };
+
+  const retrieveSavedDice = (slotIndex) => {
+    const diceToRetrieve = savedDice[slotIndex];
+    if (diceToRetrieve) {
+      setDiceValues((prevDiceValues) => [...prevDiceValues, diceToRetrieve]);
+      setSavedDice((prevSavedDice) => {
+        const newSavedDice = [...prevSavedDice];
+        newSavedDice[slotIndex] = null;
+        return newSavedDice;
+      });
     }
   };
 
@@ -93,12 +132,12 @@ const Game = () => {
         }
         break;
       case "higher":
-        if (diceValue > slot.value) {
+        if (diceValue >= slot.value) {
           updatedSlot.isClosed = true;
         }
         break;
       case "lower":
-        if (diceValue < slot.value) {
+        if (diceValue <= slot.value) {
           updatedSlot.isClosed = true;
         }
         break;
@@ -120,19 +159,25 @@ const Game = () => {
     );
   };
 
-  const onPlayerSlotDrop = (diceId) => {
+  const onPlayerSlotDrop = (diceId, diceValue, isRed) => {
     // Remove the used dice
     setDiceValues((prevDiceValues) =>
       prevDiceValues.filter((dice) => dice.id !== diceId)
     );
 
-    // Add two extra dice
-    const newDiceValues = [];
-    for (let i = 0; i < 2; i++) {
-      const value = Math.floor(Math.random() * 6) + 1;
-      newDiceValues.push({ id: uuidv4(), value });
+    if (isRed) {
+      // Increase player health by dice value
+      setPlayerHealth((prevHealth) => prevHealth + diceValue);
+    } else if (diceValue === 5) {
+      // Add two extra dice
+      const newDiceValues = [];
+      for (let i = 0; i < 2; i++) {
+        const value = Math.floor(Math.random() * 6) + 1;
+        const isRed = Math.random() < 0.1; // 10% chance for red dice
+        newDiceValues.push({ id: uuidv4(), value, isRed });
+      }
+      setDiceValues((prevDiceValues) => [...prevDiceValues, ...newDiceValues]);
     }
-    setDiceValues((prevDiceValues) => [...prevDiceValues, ...newDiceValues]);
   };
 
   const endTurn = () => {
@@ -231,8 +276,22 @@ const Game = () => {
       </div>
 
       <div className="dice-section">
+        {rollingDice.map((dice) => (
+          <Dice
+            key={dice.id}
+            id={dice.id}
+            value={dice.value}
+            isRed={dice.isRed}
+            isRolling={true}
+          />
+        ))}
         {diceValues.map((dice) => (
-          <Dice key={dice.id} id={dice.id} value={dice.value} />
+          <Dice
+            key={dice.id}
+            id={dice.id}
+            value={dice.value}
+            isRed={dice.isRed}
+          />
         ))}
       </div>
 
@@ -258,6 +317,19 @@ const Game = () => {
         >
           End Turn
         </button>
+      </div>
+
+      {/* Dice Storage Slots */}
+      <div className="dice-storage">
+        {savedDice.map((dice, index) => (
+          <SavedDiceSlot
+            key={index}
+            savedDice={dice}
+            onSaveDice={(diceId) => handleSaveDice(diceId, index)}
+            onRetrieveDice={() => retrieveSavedDice(index)}
+            index={index}
+          />
+        ))}
       </div>
     </div>
   );

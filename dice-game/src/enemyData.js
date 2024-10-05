@@ -7,7 +7,7 @@ const enemyData = [
     attack: 2,
     description: "A giant golem made of carrots.",
     slots: [
-      { id: "slot1", type: "exact", value: 2 },
+      { id: "slot1", type: "exact", value: 1 },
       { id: "slot2", type: "number", value: 5 },
     ],
   },
@@ -18,8 +18,8 @@ const enemyData = [
     attack: 3,
     description: "A sneaky fox who steals carrots.",
     slots: [
-      { id: "slot1", type: "higher", value: 3 },
-      { id: "slot2", type: "lower", value: 4 },
+      { id: "slot1", type: "higher", value: 2 },
+      { id: "slot2", type: "lower", value: 5 },
     ],
   },
   {
@@ -29,8 +29,8 @@ const enemyData = [
     attack: 4,
     description: "A fierce warrior wolf.",
     slots: [
-      { id: "slot1", type: "number", value: 8 },
-      { id: "slot2", type: "exact", value: 6 },
+      { id: "slot1", type: "number", value: 2 },
+      { id: "slot2", type: "exact", value: 3 },
     ],
   },
   {
@@ -40,8 +40,8 @@ const enemyData = [
     attack: 5,
     description: "An eagle with sharp vision.",
     slots: [
-      { id: "slot1", type: "higher", value: 4 },
-      { id: "slot2", type: "higher", value: 5 },
+      { id: "slot1", type: "higher", value: 1 },
+      { id: "slot2", type: "higher", value: 1 },
     ],
   },
   // Add more enemies as desired

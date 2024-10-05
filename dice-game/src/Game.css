@@ -26,8 +26,8 @@ h1 {
 
 .enemy-section {
   position: absolute;
-  top: 5vh;
-  left: 20%;
+  top: 80px;
+  left: 50%;
   transform: translateX(-50%);
   display: flex;
   justify-content: center;
@@ -73,4 +73,43 @@ h1 {
 .action-button:not(:disabled):hover {
   background-color: #4caf50;
   color: white;
+}
+
+/* Dice Storage Slots */
+.dice-storage {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: row; /* Horizontal layout */
+}
+
+.saved-dice-slot {
+  width: 60px;
+  height: 60px;
+  border: 2px dashed #555;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-right: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.saved-dice-slot:last-child {
+  margin-right: 0;
+}
+
+.saved-dice-slot.hover {
+  background-color: #e0ffe0;
+}
+
+.saved-dice-slot.invalid {
+  background-color: #ffe0e0;
+}
+
+/* Adjust Dice within Saved Slots */
+.saved-dice-slot .dice {
+  margin: 0;
 }

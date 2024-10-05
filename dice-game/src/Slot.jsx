@@ -1,10 +1,12 @@
 // Slot.jsx
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useDrop } from "react-dnd";
 import "./Slot.css";
 
 const Slot = ({ slot, enemyId, onDamage, isDead }) => {
   const isClosed = slot.isClosed;
+  const [isDamaged, setIsDamaged] = useState(false);
+  const [isInvalidDrop, setIsInvalidDrop] = useState(false);
 
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
@@ -13,22 +15,36 @@ const Slot = ({ slot, enemyId, onDamage, isDead }) => {
         if (isDead || isClosed) return false;
 
         // Check if the dice value meets the slot condition
+        let canDropDice = false;
         switch (slot.type) {
           case "number":
-            return true; // Any dice can be placed
+            canDropDice = true; // Any dice can be placed
+            break;
           case "exact":
-            return item.value === slot.value;
+            canDropDice = item.value === slot.value;
+            break;
           case "higher":
-            return item.value > slot.value;
+            canDropDice = item.value >= slot.value; // Inclusive
+            break;
           case "lower":
-            return item.value < slot.value;
+            canDropDice = item.value <= slot.value; // Inclusive
+            break;
           default:
-            return false;
+            break;
         }
+        return canDropDice;
       },
       drop: (item) => {
         if (!isDead && !isClosed) {
           onDamage(enemyId, slot, item.id, item.value);
+          setIsDamaged(true);
+        }
+      },
+      hover: (item, monitor) => {
+        if (!monitor.canDrop()) {
+          setIsInvalidDrop(true);
+        } else {
+          setIsInvalidDrop(false);
         }
       },
       collect: (monitor) => ({
@@ -38,6 +54,20 @@ const Slot = ({ slot, enemyId, onDamage, isDead }) => {
     }),
     [isDead, isClosed, slot]
   );
+
+  useEffect(() => {
+    if (isDamaged) {
+      const timer = setTimeout(() => setIsDamaged(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isDamaged]);
+
+  useEffect(() => {
+    if (isInvalidDrop) {
+      const timer = setTimeout(() => setIsInvalidDrop(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isInvalidDrop]);
 
   const getSlotLabel = () => {
     if (isClosed) {
@@ -62,7 +92,9 @@ const Slot = ({ slot, enemyId, onDamage, isDead }) => {
       ref={drop}
       className={`slot ${isOver && canDrop ? "hover" : ""} ${
         !canDrop && isOver ? "invalid" : ""
-      } ${isClosed ? "closed" : ""}`}
+      } ${isClosed ? "closed" : ""} ${isDamaged ? "damaged" : ""} ${
+        isInvalidDrop ? "invalid-drop" : ""
+      }`}
     >
       {getSlotLabel()}
     </div>
