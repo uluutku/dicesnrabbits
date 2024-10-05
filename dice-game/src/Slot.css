@@ -1,0 +1,45 @@
+/* Slot.css */
+.slot {
+  width: 50px;
+  height: 50px;
+  border: 2px dashed #555;
+  border-radius: 5px;
+  margin: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  background-color: #f9f9f9;
+  position: relative;
+}
+
+.slot.closed {
+  background-color: #ddd;
+  border-color: #aaa;
+  color: #999;
+}
+
+.slot.hover {
+  background-color: #e0ffe0;
+}
+
+.slot.invalid {
+  background-color: #ffe0e0;
+}
+
+.slot::after {
+  content: "";
+  position: absolute;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  border: 2px solid transparent;
+  border-radius: 5px;
+}
+
+.slot.hover::after {
+  border-color: green;
+}
+
+.slot.invalid::after {
+  border-color: red;
+}

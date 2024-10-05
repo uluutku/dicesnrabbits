@@ -1,0 +1,70 @@
+/* Dice.css */
+.dice {
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 10px;
+  margin-right: 10px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background-color: black;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.dot.top-left {
+  top: 10px;
+  left: 10px;
+}
+
+.dot.top-right {
+  top: 10px;
+  right: 10px;
+}
+
+.dot.center {
+  top: calc(50% - 6px);
+  left: calc(50% - 6px);
+}
+
+.dot.middle-left {
+  top: calc(50% - 6px);
+  left: 10px;
+}
+
+.dot.middle-right {
+  top: calc(50% - 6px);
+  right: 10px;
+}
+
+.dot.bottom-left {
+  bottom: 10px;
+  left: 10px;
+}
+
+.dot.bottom-right {
+  bottom: 10px;
+  right: 10px;
+}
+
+.dice.rolling {
+  animation: roll 1s ease-in-out;
+  background-color: #f0f0f0;
+}
+
+@keyframes roll {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
