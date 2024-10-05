@@ -41,18 +41,42 @@ const Game = () => {
   }, [enemies, showShop, currentStage]);
 
   const startNewStage = () => {
-    const enemyCount = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
-    const newEnemies = [];
-    for (let i = 0; i < enemyCount; i++) {
-      newEnemies.push(getRandomEnemy());
+    let enemyCount = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
+
+    // For the final stage, override with the boss enemy
+    if (currentStage === 30) {
+      enemyCount = 1; // Only one boss
+      const bossEnemy = getBossEnemy();
+      setEnemies([bossEnemy]);
+    } else {
+      const newEnemies = [];
+      for (let i = 0; i < enemyCount; i++) {
+        newEnemies.push(getRandomEnemy());
+      }
+      setEnemies(newEnemies);
     }
-    setEnemies(newEnemies);
   };
 
   // Function to get a random enemy from enemyData
   const getRandomEnemy = () => {
-    const randomIndex = Math.floor(Math.random() * enemyData.length);
-    const enemyTemplate = enemyData[randomIndex];
+    // Determine difficulty based on current stage
+    let difficultyLevel;
+    if (currentStage <= 3) {
+      difficultyLevel = 1; // Easy enemies
+    } else if (currentStage <= 20) {
+      difficultyLevel = 2; // Medium enemies
+    } else {
+      difficultyLevel = 3; // Hard enemies
+    }
+
+    // Filter enemies based on difficulty
+    const availableEnemies = enemyData.filter(
+      (enemy) => enemy.difficulty === difficultyLevel
+    );
+
+    const randomIndex = Math.floor(Math.random() * availableEnemies.length);
+    const enemyTemplate = availableEnemies[randomIndex];
+
     // Create a copy of the enemy object and assign a unique instance ID
     const enemy = {
       ...enemyTemplate,
@@ -61,6 +85,16 @@ const Game = () => {
       slots: enemyTemplate.slots.map((slot) => ({ ...slot, isClosed: false })),
     };
     return enemy;
+  };
+
+  const getBossEnemy = () => {
+    const bossEnemyData = enemyData.find((enemy) => enemy.difficulty === 4);
+    const bossEnemy = {
+      ...bossEnemyData,
+      id: uuidv4(),
+      slots: bossEnemyData.slots.map((slot) => ({ ...slot, isClosed: false })),
+    };
+    return bossEnemy;
   };
 
   const throwDice = () => {
