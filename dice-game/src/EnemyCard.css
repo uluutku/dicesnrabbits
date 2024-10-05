@@ -1,13 +1,13 @@
 /* EnemyCard.css */
 
 .enemy-card {
-  width: 120px;
-  border: 2px solid red;
-  border-radius: 10px;
+  width: 200px;
+  border: 2px solid rgb(154, 107, 107);
+  border-radius: 12px;
   padding: 10px;
   margin: 5px;
-  position: relative;
   text-align: center;
+  position: relative;
   background-color: #ffe0e0;
 }
 
@@ -38,9 +38,12 @@
 }
 
 .enemy-image {
+  min-width: 30px;
+  min-height: 30px;
+  border: 1px solid;
   width: 100%;
   height: auto;
-  border-radius: 5px;
+  border-radius: 12px;
   margin-bottom: 5px;
 }
 

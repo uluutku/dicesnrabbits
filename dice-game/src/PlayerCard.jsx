@@ -55,10 +55,14 @@ const PlayerCard = ({
 
       {/* Avatar Image */}
       <img
-        src="/images/rabbit_wizard.png"
+        src="/images/rabbit-wizard.png"
         alt="Rabbit Wizard"
         className="avatar-image"
       />
+
+      <div>
+        <h1 className="name-text">Rabbit Wizard</h1>
+      </div>
 
       {/* Dice Change Slot */}
       <div

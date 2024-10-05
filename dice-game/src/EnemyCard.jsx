@@ -1,5 +1,4 @@
 // EnemyCard.jsx
-import React from "react";
 import "./EnemyCard.css";
 import Slot from "./Slot";
 

@@ -2,6 +2,7 @@
 
 .player-card {
   width: 200px;
+  height: 300px;
   padding: 20px;
   border: 2px solid green;
   border-radius: 10px;
@@ -16,8 +17,8 @@
   border: 2px dashed #555;
   border-radius: 5px;
   position: absolute;
-  top: -10px;
-  left: -10px;
+  top: 10px;
+  left: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,9 +41,14 @@
 }
 
 .avatar-image {
-  width: 100px;
+  width: 80%;
   height: auto;
-  margin-top: 30px;
+  margin-top: 50px;
+  border-radius: 12px;
+}
+
+.name-text {
+  font-size: 1rem;
 }
 
 .hover {

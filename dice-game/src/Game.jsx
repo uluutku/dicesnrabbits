@@ -304,7 +304,6 @@ const Game = () => {
 
   return (
     <div className="game-container">
-      <h1>Dices & Rabbits</h1>
       <p className="stage-info">Stage: {currentStage}</p>
 
       <div className="enemy-section">
