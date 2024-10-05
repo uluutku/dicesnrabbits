@@ -1,20 +1,52 @@
-// App.jsx
-import React, { useState } from "react";
+// Game.jsx
+import React, { useState, useEffect } from "react";
 import Dice from "./Dice";
 import EnemyCard from "./EnemyCard";
 import PlayerCard from "./PlayerCard";
+import Shop from "./Shop";
 import enemyData from "./enemyData";
 import { v4 as uuidv4 } from "uuid";
-import "./App.css";
+import "./Game.css";
 
 const Game = () => {
   const [diceValues, setDiceValues] = useState([]);
   const [diceThrown, setDiceThrown] = useState(false);
   const [playerHealth, setPlayerHealth] = useState(50);
-  const [enemies, setEnemies] = useState([getRandomEnemy()]);
+  const [enemies, setEnemies] = useState([]);
+  const [currentStage, setCurrentStage] = useState(1);
+  const [showShop, setShowShop] = useState(false);
+  const [buffs, setBuffs] = useState({
+    extraDice: 0,
+    damageReduction: 0,
+  });
+
+  // Initialize enemies or show shop at the start
+  useEffect(() => {
+    if (enemies.length === 0 && !showShop) {
+      if (currentStage > 30) {
+        // Game finished
+        // You can add a game completion screen here
+      } else if (currentStage % 5 === 0 && currentStage !== 0) {
+        // Show shop every 5 stages
+        setShowShop(true);
+      } else {
+        // Start new stage
+        startNewStage();
+      }
+    }
+  }, [enemies, showShop, currentStage]);
+
+  const startNewStage = () => {
+    const enemyCount = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
+    const newEnemies = [];
+    for (let i = 0; i < enemyCount; i++) {
+      newEnemies.push(getRandomEnemy());
+    }
+    setEnemies(newEnemies);
+  };
 
   // Function to get a random enemy from enemyData
-  function getRandomEnemy() {
+  const getRandomEnemy = () => {
     const randomIndex = Math.floor(Math.random() * enemyData.length);
     const enemyTemplate = enemyData[randomIndex];
     // Create a copy of the enemy object and assign a unique instance ID
@@ -25,21 +57,22 @@ const Game = () => {
       slots: enemyTemplate.slots.map((slot) => ({ ...slot, isClosed: false })),
     };
     return enemy;
-  }
+  };
 
   const throwDice = () => {
     if (!diceThrown) {
-      const value1 = Math.floor(Math.random() * 6) + 1;
-      const value2 = Math.floor(Math.random() * 6) + 1;
-      setDiceValues([
-        { id: uuidv4(), value: value1 },
-        { id: uuidv4(), value: value2 },
-      ]);
+      const totalDice = 2 + buffs.extraDice;
+      const newDiceValues = [];
+      for (let i = 0; i < totalDice; i++) {
+        const value = Math.floor(Math.random() * 6) + 1;
+        newDiceValues.push({ id: uuidv4(), value });
+      }
+      setDiceValues(newDiceValues);
       setDiceThrown(true);
     }
   };
 
-  const handleDamage = (enemyId, slot, diceId, diceValue, setSlotState) => {
+  const handleDamage = (enemyId, slot, diceId, diceValue) => {
     // Remove the used dice
     setDiceValues((prevDiceValues) =>
       prevDiceValues.filter((dice) => dice.id !== diceId)
@@ -55,18 +88,23 @@ const Game = () => {
         }
         break;
       case "exact":
-        updatedSlot.isClosed = true;
+        if (diceValue === slot.value) {
+          updatedSlot.isClosed = true;
+        }
         break;
       case "higher":
+        if (diceValue > slot.value) {
+          updatedSlot.isClosed = true;
+        }
+        break;
       case "lower":
-        updatedSlot.isClosed = true;
+        if (diceValue < slot.value) {
+          updatedSlot.isClosed = true;
+        }
         break;
       default:
         break;
     }
-
-    // Update the slot state
-    setSlotState(updatedSlot);
 
     // Update the enemy's slots in the enemies array
     setEnemies((prevEnemies) =>
@@ -82,6 +120,21 @@ const Game = () => {
     );
   };
 
+  const onPlayerSlotDrop = (diceId) => {
+    // Remove the used dice
+    setDiceValues((prevDiceValues) =>
+      prevDiceValues.filter((dice) => dice.id !== diceId)
+    );
+
+    // Add two extra dice
+    const newDiceValues = [];
+    for (let i = 0; i < 2; i++) {
+      const value = Math.floor(Math.random() * 6) + 1;
+      newDiceValues.push({ id: uuidv4(), value });
+    }
+    setDiceValues((prevDiceValues) => [...prevDiceValues, ...newDiceValues]);
+  };
+
   const endTurn = () => {
     // Calculate enemy attack
     const totalEnemyAttack = enemies
@@ -91,29 +144,103 @@ const Game = () => {
       })
       .reduce((total, enemy) => total + enemy.attack, 0);
 
-    setPlayerHealth((prevHealth) => prevHealth - totalEnemyAttack);
+    const damageTaken = Math.max(totalEnemyAttack - buffs.damageReduction, 0);
+
+    setPlayerHealth((prevHealth) => prevHealth - damageTaken);
 
     // Remove defeated enemies
     const aliveEnemies = enemies.filter((enemy) => {
       return !enemy.slots.every((slot) => slot.isClosed);
     });
 
-    // If all enemies are defeated, spawn a new one
+    // If all enemies are defeated, increment the stage
     if (aliveEnemies.length === 0) {
-      setEnemies([getRandomEnemy()]);
+      setCurrentStage((prevStage) => prevStage + 1);
+      setEnemies([]); // Clear enemies to trigger useEffect
+      setDiceThrown(false);
+      setDiceValues([]);
     } else {
       setEnemies(aliveEnemies);
+      setDiceThrown(false);
+      setDiceValues([]);
+    }
+  };
+
+  const handleBuffSelection = (selectedBuff) => {
+    // Apply the selected buff
+    switch (selectedBuff.type) {
+      case "extraDice":
+        setBuffs((prevBuffs) => ({
+          ...prevBuffs,
+          extraDice: prevBuffs.extraDice + 1,
+        }));
+        break;
+      case "heal":
+        setPlayerHealth((prevHealth) => prevHealth + selectedBuff.amount);
+        break;
+      case "damageReduction":
+        setBuffs((prevBuffs) => ({
+          ...prevBuffs,
+          damageReduction: prevBuffs.damageReduction + selectedBuff.amount,
+        }));
+        break;
+      default:
+        break;
     }
 
-    setDiceValues([]);
-    setDiceThrown(false);
+    // Close the shop and start the next stage
+    setShowShop(false);
+    startNewStage();
   };
+
+  if (showShop) {
+    return (
+      <div className="game-container">
+        <Shop onSelectBuff={handleBuffSelection} />
+      </div>
+    );
+  }
+
+  if (currentStage > 30) {
+    return (
+      <div className="game-container">
+        <h1>Congratulations!</h1>
+        <p>You have completed all stages!</p>
+      </div>
+    );
+  }
+
+  if (playerHealth <= 0) {
+    return (
+      <div className="game-container">
+        <h1>Game Over!</h1>
+        <p>You reached stage {currentStage}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="game-container">
-      <h1>Dice Battle</h1>
+      <h1>Dices & Rabbits</h1>
+      <p className="stage-info">Stage: {currentStage}</p>
+
+      <div className="enemy-section">
+        {enemies.map((enemy) => (
+          <EnemyCard key={enemy.id} enemy={enemy} onDamage={handleDamage} />
+        ))}
+      </div>
+
+      <div className="dice-section">
+        {diceValues.map((dice) => (
+          <Dice key={dice.id} id={dice.id} value={dice.value} />
+        ))}
+      </div>
+
       <div className="player-section">
-        <PlayerCard playerHealth={playerHealth} />
+        <PlayerCard
+          playerHealth={playerHealth}
+          onPlayerSlotDrop={onPlayerSlotDrop}
+        />
         <button
           onClick={throwDice}
           disabled={diceThrown}
@@ -123,27 +250,15 @@ const Game = () => {
         </button>
       </div>
 
-      <div className="dice-section">
-        {diceValues.map((dice) => (
-          <Dice key={dice.id} id={dice.id} value={dice.value} />
-        ))}
+      <div className="end-turn-button">
+        <button
+          onClick={endTurn}
+          disabled={!diceThrown}
+          className="action-button"
+        >
+          End Turn
+        </button>
       </div>
-
-      <div className="enemy-section">
-        {enemies.map((enemy) => (
-          <EnemyCard key={enemy.id} enemy={enemy} onDamage={handleDamage} />
-        ))}
-      </div>
-
-      <button
-        onClick={endTurn}
-        disabled={!diceThrown}
-        className="action-button"
-      >
-        End Turn
-      </button>
-
-      {playerHealth <= 0 && <h2>Game Over!</h2>}
     </div>
   );
 };

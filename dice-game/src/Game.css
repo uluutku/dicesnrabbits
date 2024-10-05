@@ -1,0 +1,76 @@
+/* Game.css */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+}
+
+.game-container {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.stage-info {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.enemy-section {
+  position: absolute;
+  top: 5vh;
+  left: 20%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dice-section {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+}
+
+.player-section {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.end-turn-button {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+.action-button {
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.action-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.action-button:not(:disabled):hover {
+  background-color: #4caf50;
+  color: white;
+}

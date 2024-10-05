@@ -1,4 +1,5 @@
 /* PlayerCard.css */
+
 .player-card {
   width: 200px;
   padding: 20px;
@@ -6,6 +7,7 @@
   border-radius: 10px;
   background-color: #e0ffe0;
   text-align: center;
+  position: relative;
 }
 
 .health-bar {
@@ -20,4 +22,43 @@
 .health-fill {
   height: 100%;
   background-color: green;
+}
+
+.player-slot {
+  width: 50px;
+  height: 50px;
+  border: 2px dashed #555;
+  border-radius: 5px;
+  margin: 10px auto 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  background-color: #f9f9f9;
+  position: relative;
+}
+
+.player-slot.hover {
+  background-color: #e0ffe0;
+}
+
+.player-slot.invalid {
+  background-color: #ffe0e0;
+}
+
+.player-slot::after {
+  content: "";
+  position: absolute;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  border: 2px solid transparent;
+  border-radius: 5px;
+}
+
+.player-slot.hover::after {
+  border-color: green;
+}
+
+.player-slot.invalid::after {
+  border-color: red;
 }

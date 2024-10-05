@@ -1,23 +1,44 @@
 // PlayerCard.jsx
 import React from "react";
+import { useDrop } from "react-dnd";
 import "./PlayerCard.css";
 
-const PlayerCard = ({ playerHealth }) => {
-  const maxHealth = 60;
-  const healthPercentage = (playerHealth / maxHealth) * 100;
+const PlayerCard = ({ playerHealth, onPlayerSlotDrop }) => {
+  const [{ isOver, canDrop }, drop] = useDrop(
+    () => ({
+      accept: "DICE",
+      canDrop: (item) => item.value === 5,
+      drop: (item) => {
+        onPlayerSlotDrop(item.id);
+      },
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      }),
+    }),
+    [onPlayerSlotDrop]
+  );
 
   return (
     <div className="player-card">
-      <h3>Player</h3>
+      <h3>Rabbit Wizard</h3>
       <div className="health-bar">
         <div
           className="health-fill"
-          style={{ width: `${healthPercentage}%` }}
+          style={{ width: `${(playerHealth / 60) * 100}%` }}
         ></div>
       </div>
-      <p>
-        {playerHealth} / {maxHealth} HP
-      </p>
+      <p>{playerHealth} / 60 HP</p>
+
+      {/* Player Slot */}
+      <div
+        ref={drop}
+        className={`player-slot ${isOver && canDrop ? "hover" : ""} ${
+          !canDrop && isOver ? "invalid" : ""
+        }`}
+      >
+        =5
+      </div>
     </div>
   );
 };
