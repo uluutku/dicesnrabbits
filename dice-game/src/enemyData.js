@@ -1,91 +1,89 @@
 // enemyData.js
+
 const enemyData = [
-  // Easy Enemies (Difficulty 1)
   {
     id: "enemy1",
-    name: "Carrot Golem",
-    image: "/images/carrot_golem.png",
-    attack: 2,
-    description: "A giant golem made of carrots.",
+    name: "Slime",
+    description: "A weak slime creature.",
+    attack: 5,
     difficulty: 1,
+    coinDrop: 10, // Coins dropped when defeated
     slots: [
-      { id: "slot1", type: "exact", value: 2 },
-      { id: "slot2", type: "number", value: 5 },
+      { id: "slot1", type: "number", value: 5 },
+      { id: "slot2", type: "exact", value: 2 },
     ],
+    image: "/images/slime.png",
   },
   {
     id: "enemy2",
-    name: "Fox Bandit",
-    image: "/images/fox_bandit.png",
-    attack: 3,
-    description: "A sneaky fox who steals carrots.",
+    name: "Goblin",
+    description: "A sneaky goblin.",
+    attack: 7,
     difficulty: 1,
+    coinDrop: 15,
     slots: [
       { id: "slot1", type: "higher", value: 3 },
-      { id: "slot2", type: "lower", value: 4 },
+      { id: "slot2", type: "number", value: 4 },
     ],
+    image: "/images/goblin.png",
   },
-  // Medium Enemies (Difficulty 2)
   {
     id: "enemy3",
-    name: "Wolf Warrior",
-    image: "/images/wolf_warrior.png",
-    attack: 4,
-    description: "A fierce warrior wolf.",
+    name: "Orc",
+    description: "A strong orc warrior.",
+    attack: 10,
     difficulty: 2,
+    coinDrop: 20,
     slots: [
-      { id: "slot1", type: "number", value: 14 },
-      { id: "slot2", type: "exact", value: 6 },
+      { id: "slot1", type: "number", value: 10 },
+      { id: "slot2", type: "exact", value: 5 },
+      { id: "slot3", type: "higher", value: 4 },
     ],
+    image: "/images/orc.png",
   },
   {
     id: "enemy4",
-    name: "Eagle Eye",
-    image: "/images/eagle_eye.png",
-    attack: 5,
-    description: "An eagle with sharp vision.",
+    name: "Skeleton",
+    description: "A spooky skeleton.",
+    attack: 8,
     difficulty: 2,
+    coinDrop: 18,
     slots: [
-      { id: "slot1", type: "higher", value: 12 },
-      { id: "slot2", type: "higher", value: 5 },
+      { id: "slot1", type: "lower", value: 4 },
+      { id: "slot2", type: "number", value: 6 },
     ],
+    image: "/images/skeleton.png",
   },
-  // Hard Enemies (Difficulty 3)
   {
     id: "enemy5",
-    name: "Shadow Hare",
-    image: "/images/shadow_hare.png",
-    attack: 6,
-    description: "A dark reflection of yourself.",
+    name: "Dark Mage",
+    description: "A mage wielding dark magic.",
+    attack: 12,
     difficulty: 3,
+    coinDrop: 25,
     slots: [
       { id: "slot1", type: "exact", value: 6 },
-      { id: "slot2", type: "higher", value: 4 },
-    ],
-  },
-  {
-    id: "enemy6",
-    name: "Mystic Tortoise",
-    image: "/images/mystic_tortoise.png",
-    attack: 3,
-    description: "An ancient tortoise with mystical powers.",
-    difficulty: 3,
-    slots: [{ id: "slot1", type: "number", value: 12 }],
-  },
-  // Boss Enemy (Difficulty 4)
-  {
-    id: "boss1",
-    name: "Dragon King",
-    image: "/images/dragon_king.png",
-    attack: 10,
-    description: "The mighty Dragon King, ruler of the skies.",
-    difficulty: 4,
-    slots: [
-      { id: "slot1", type: "number", value: 20 },
-      { id: "slot2", type: "exact", value: 6 },
+      { id: "slot2", type: "number", value: 8 },
       { id: "slot3", type: "higher", value: 5 },
     ],
+    image: "/images/dark_mage.png",
   },
+  {
+    id: "enemyBoss",
+    name: "Dragon",
+    description: "A fearsome dragon.",
+    attack: 20,
+    difficulty: 4,
+    coinDrop: 100,
+    slots: [
+      { id: "slot1", type: "number", value: 20 },
+      { id: "slot2", type: "number", value: 15 },
+      { id: "slot3", type: "exact", value: 6 },
+      { id: "slot4", type: "higher", value: 5 },
+    ],
+    image: "/images/dragon.png",
+  },
+  // Add more enemies as needed
 ];
 
 export default enemyData;

@@ -1,16 +1,17 @@
-/* PlayerCard.css */
+/* CompanionCard.css */
 
-.player-card {
+.companion-card {
   width: 200px;
   padding: 20px;
-  border: 2px solid green;
+  border: 2px solid blue;
   border-radius: 10px;
-  background-color: #e0ffe0;
+  background-color: #e0e0ff;
   text-align: center;
   position: relative;
+  margin-top: 20px;
 }
 
-.health-slot {
+.companion-health-slot {
   width: 50px;
   height: 50px;
   border: 2px dashed #555;
@@ -21,11 +22,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f9f9f9;
+  background-color: #f0f0ff;
   font-weight: bold;
 }
 
-.dice-change-slot {
+.companion-avatar-image {
+  width: 100px;
+  height: auto;
+  margin-top: 30px;
+}
+
+.companion-name {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.companion-ability-slot {
   width: 50px;
   height: 50px;
   border: 2px dashed #555;
@@ -35,38 +47,8 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  background-color: #f9f9f9;
+  background-color: #f0f0ff;
   position: relative;
-}
-
-.avatar-image {
-  width: 100px;
-  height: auto;
-  margin-top: 30px;
-}
-
-.coins-display {
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-.buffs-display {
-  margin-top: 10px;
-  text-align: left;
-}
-
-.buffs-display h4 {
-  margin: 0;
-}
-
-.buffs-display ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 5px 0 0 0;
-}
-
-.buffs-display li {
-  font-size: 14px;
 }
 
 .hover {
@@ -77,13 +59,11 @@
   background-color: #ffe0e0;
 }
 
-.health-slot.hover,
-.dice-change-slot.hover {
+.companion-ability-slot.hover {
   border-color: green;
 }
 
-.health-slot.invalid,
-.dice-change-slot.invalid {
+.companion-ability-slot.invalid {
   border-color: red;
 }
 

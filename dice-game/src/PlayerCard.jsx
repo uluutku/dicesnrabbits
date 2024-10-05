@@ -5,8 +5,13 @@ import "./PlayerCard.css";
 
 const PlayerCard = ({
   playerHealth,
+  playerCoins,
+  buffs,
+  collectedBuffs,
   onHealthSlotDrop,
   onDiceChangeSlotDrop,
+  damageAnimation,
+  healAnimation,
 }) => {
   // Health Slot (Top Left)
   const [{ isOverHealthSlot, canDropHealthSlot }, healthSlotRef] = useDrop(
@@ -42,7 +47,11 @@ const PlayerCard = ({
     );
 
   return (
-    <div className="player-card">
+    <div
+      className={`player-card ${damageAnimation ? "damage-animation" : ""} ${
+        healAnimation ? "heal-animation" : ""
+      }`}
+    >
       {/* Health Slot */}
       <div
         ref={healthSlotRef}
@@ -55,13 +64,22 @@ const PlayerCard = ({
 
       {/* Avatar Image */}
       <img
-        src="/images/rabbit-wizard.png"
+        src="/images/rabbit_wizard.png"
         alt="Rabbit Wizard"
         className="avatar-image"
       />
 
-      <div>
-        <h1 className="name-text">Rabbit Wizard</h1>
+      {/* Coins Display */}
+      <div className="coins-display">Coins: {playerCoins}</div>
+
+      {/* Buffs Display */}
+      <div className="buffs-display">
+        <h4>Buffs:</h4>
+        <ul>
+          {collectedBuffs.map((buff, index) => (
+            <li key={index}>{buff.name}</li>
+          ))}
+        </ul>
       </div>
 
       {/* Dice Change Slot */}

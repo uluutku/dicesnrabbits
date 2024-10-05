@@ -2,13 +2,14 @@
 import React from "react";
 import "./Shop.css";
 
-const Shop = ({ onSelectBuff }) => {
+const Shop = ({ onSelectBuff, playerCoins }) => {
   const buffOptions = [
     {
       id: "buff1",
       name: "Extra Dice",
       description: "Gain one extra dice per turn.",
       type: "extraDice",
+      cost: 15,
     },
     {
       id: "buff2",
@@ -16,6 +17,7 @@ const Shop = ({ onSelectBuff }) => {
       description: "Restore 10 health points.",
       type: "heal",
       amount: 10,
+      cost: 10,
     },
     {
       id: "buff3",
@@ -23,6 +25,7 @@ const Shop = ({ onSelectBuff }) => {
       description: "Reduce enemy damage by 1.",
       type: "damageReduction",
       amount: 1,
+      cost: 20,
     },
     // Add more buffs as desired
   ];
@@ -34,17 +37,19 @@ const Shop = ({ onSelectBuff }) => {
   return (
     <div className="shop-container">
       <h2>Shop</h2>
-      <p>Select one buff:</p>
+      <p>You have {playerCoins} coins. Select a buff to purchase:</p>
       <div className="buff-options">
         {buffsToShow.map((buff) => (
           <div key={buff.id} className="buff-card">
             <h3>{buff.name}</h3>
             <p>{buff.description}</p>
+            <p className="buff-cost">Cost: {buff.cost} coins</p>
             <button
               className="select-button"
               onClick={() => onSelectBuff(buff)}
+              disabled={playerCoins < buff.cost}
             >
-              Select
+              {playerCoins >= buff.cost ? "Purchase" : "Insufficient Coins"}
             </button>
           </div>
         ))}

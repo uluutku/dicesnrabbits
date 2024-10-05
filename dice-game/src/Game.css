@@ -113,3 +113,85 @@ body {
 .saved-dice-slot .dice {
   margin: 0;
 }
+
+.player-companion-section {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.player-companion-cards {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.coin-status {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.coin-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+
+/* Start and End Screens */
+.start-screen,
+.end-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000ee; /* Semi-transparent black */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 1000;
+}
+
+.start-button,
+.restart-button {
+  padding: 15px 30px;
+  font-size: 18px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.start-button:hover,
+.restart-button:hover {
+  background-color: #2196f3;
+  color: white;
+}
+
+/* Coin Animation */
+.coin-animation {
+  position: absolute;
+  top: 50%; /* Adjust as needed */
+  left: 50%; /* Adjust as needed */
+  animation: moveCoin 1s forwards;
+}
+
+.coin-image {
+  width: 30px;
+  height: 30px;
+}
+
+@keyframes moveCoin {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(500px, -300px); /* Adjust based on actual positions */
+  }
+}

@@ -1,4 +1,4 @@
-/* Shop.css */
+/* CompanionShop.css */
 
 .shop-container {
   position: absolute;
@@ -12,13 +12,13 @@
   text-align: center;
 }
 
-.buff-options {
+.companion-options {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 }
 
-.buff-card {
+.companion-card {
   border: 1px solid #000;
   padding: 15px;
   margin: 10px;
@@ -26,7 +26,12 @@
   border-radius: 5px;
 }
 
-.buff-cost {
+.companion-image {
+  width: 100px;
+  height: auto;
+}
+
+.companion-cost {
   font-weight: bold;
   margin-top: 5px;
 }
