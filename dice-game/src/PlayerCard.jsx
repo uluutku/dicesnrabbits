@@ -3,41 +3,71 @@ import React from "react";
 import { useDrop } from "react-dnd";
 import "./PlayerCard.css";
 
-const PlayerCard = ({ playerHealth, onPlayerSlotDrop }) => {
-  const [{ isOver, canDrop }, drop] = useDrop(
+const PlayerCard = ({
+  playerHealth,
+  onHealthSlotDrop,
+  onDiceChangeSlotDrop,
+}) => {
+  // Health Slot (Top Left)
+  const [{ isOverHealthSlot, canDropHealthSlot }, healthSlotRef] = useDrop(
     () => ({
       accept: "DICE",
-      canDrop: () => true, // Accept any dice
+      canDrop: (item) => item.isRed, // Accept only red dice
       drop: (item) => {
-        onPlayerSlotDrop(item.id, item.value, item.isRed);
+        onHealthSlotDrop(item.id, item.value);
       },
       collect: (monitor) => ({
-        isOver: !!monitor.isOver(),
-        canDrop: monitor.canDrop(),
+        isOverHealthSlot: !!monitor.isOver(),
+        canDropHealthSlot: monitor.canDrop(),
       }),
     }),
-    [onPlayerSlotDrop]
+    [onHealthSlotDrop]
   );
+
+  // Dice Change Slot (Bottom)
+  const [{ isOverDiceChangeSlot, canDropDiceChangeSlot }, diceChangeSlotRef] =
+    useDrop(
+      () => ({
+        accept: "DICE",
+        canDrop: (item) => item.value === 5, // Accept only dice with value 5
+        drop: (item) => {
+          onDiceChangeSlotDrop(item.id);
+        },
+        collect: (monitor) => ({
+          isOverDiceChangeSlot: !!monitor.isOver(),
+          canDropDiceChangeSlot: monitor.canDrop(),
+        }),
+      }),
+      [onDiceChangeSlotDrop]
+    );
 
   return (
     <div className="player-card">
-      <h3>Rabbit Wizard</h3>
-      <div className="health-bar">
-        <div
-          className="health-fill"
-          style={{ width: `${(playerHealth / 60) * 100}%` }}
-        ></div>
-      </div>
-      <p>{playerHealth} / 60 HP</p>
-
-      {/* Player Slot */}
+      {/* Health Slot */}
       <div
-        ref={drop}
-        className={`player-slot ${isOver && canDrop ? "hover" : ""} ${
-          !canDrop && isOver ? "invalid" : ""
-        }`}
+        ref={healthSlotRef}
+        className={`health-slot ${
+          isOverHealthSlot && canDropHealthSlot ? "hover" : ""
+        } ${!canDropHealthSlot && isOverHealthSlot ? "invalid" : ""}`}
       >
-        =5 / Red Dice
+        HP: {playerHealth}
+      </div>
+
+      {/* Avatar Image */}
+      <img
+        src="/images/rabbit_wizard.png"
+        alt="Rabbit Wizard"
+        className="avatar-image"
+      />
+
+      {/* Dice Change Slot */}
+      <div
+        ref={diceChangeSlotRef}
+        className={`dice-change-slot ${
+          isOverDiceChangeSlot && canDropDiceChangeSlot ? "hover" : ""
+        } ${!canDropDiceChangeSlot && isOverDiceChangeSlot ? "invalid" : ""}`}
+      >
+        =5
       </div>
     </div>
   );

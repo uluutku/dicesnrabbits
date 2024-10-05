@@ -37,6 +37,7 @@ const SavedDiceSlot = ({ savedDice, onSaveDice, onRetrieveDice }) => {
           id={savedDice.id}
           value={savedDice.value}
           isRed={savedDice.isRed}
+          position={{ top: "0%", left: "0%" }}
         />
       ) : (
         "Save Dice"

@@ -3,7 +3,7 @@ import React from "react";
 import { useDrag } from "react-dnd";
 import "./Dice.css";
 
-const Dice = ({ id, value, isRed }) => {
+const Dice = ({ id, value, isRed, isRolling, position }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "DICE",
     item: { id, value, isRed },
@@ -13,36 +13,66 @@ const Dice = ({ id, value, isRed }) => {
   }));
 
   const renderDots = (value) => {
-    const positions = {
-      1: ["center"],
-      2: ["top-left", "bottom-right"],
-      3: ["top-left", "center", "bottom-right"],
-      4: ["top-left", "top-right", "bottom-left", "bottom-right"],
-      5: ["top-left", "top-right", "center", "bottom-left", "bottom-right"],
+    const dotPositions = {
+      1: [[2, 2]],
+      2: [
+        [1, 1],
+        [3, 3],
+      ],
+      3: [
+        [1, 1],
+        [2, 2],
+        [3, 3],
+      ],
+      4: [
+        [1, 1],
+        [1, 3],
+        [3, 1],
+        [3, 3],
+      ],
+      5: [
+        [1, 1],
+        [1, 3],
+        [2, 2],
+        [3, 1],
+        [3, 3],
+      ],
       6: [
-        "top-left",
-        "top-right",
-        "middle-left",
-        "middle-right",
-        "bottom-left",
-        "bottom-right",
+        [1, 1],
+        [1, 2],
+        [1, 3],
+        [3, 1],
+        [3, 2],
+        [3, 3],
       ],
     };
 
-    return positions[value].map((position, index) => (
-      <div key={index} className={`dot ${position}`}></div>
+    return dotPositions[value].map(([row, col], index) => (
+      <div
+        key={index}
+        className="dot"
+        style={{
+          gridRow: row,
+          gridColumn: col,
+        }}
+      ></div>
     ));
   };
 
   return (
     <div
       ref={drag}
-      className={`dice ${isRed ? "red-dice" : ""}`}
+      className={`dice ${isRed ? "red-dice" : ""} ${
+        isRolling ? "rolling" : ""
+      }`}
       style={{
         opacity: isDragging ? 0.5 : 1,
+        position: "absolute",
+        top: position?.top || "0%",
+        left: position?.left || "0%",
       }}
     >
-      {renderDots(value)}
+      <div className="dots-container">{renderDots(value)}</div>
     </div>
   );
 };

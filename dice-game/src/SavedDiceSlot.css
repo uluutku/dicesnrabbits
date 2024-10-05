@@ -28,4 +28,5 @@
 
 .saved-dice-slot .dice {
   margin: 0;
+  position: relative; /* Override absolute positioning */
 }

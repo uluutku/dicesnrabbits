@@ -70,7 +70,11 @@ const Game = () => {
       for (let i = 0; i < totalDice; i++) {
         const value = Math.floor(Math.random() * 6) + 1;
         const isRed = Math.random() < 0.1; // 10% chance for red dice
-        newDiceValues.push({ id: uuidv4(), value, isRed });
+        const position = {
+          top: Math.random() * 80 + "%",
+          left: Math.random() * 80 + "%",
+        };
+        newDiceValues.push({ id: uuidv4(), value, isRed, position });
       }
       setRollingDice(newDiceValues);
       setDiceThrown(true);
@@ -116,6 +120,9 @@ const Game = () => {
     setDiceValues((prevDiceValues) =>
       prevDiceValues.filter((dice) => dice.id !== diceId)
     );
+    setSavedDice((prevSavedDice) =>
+      prevSavedDice.map((dice) => (dice && dice.id === diceId ? null : dice))
+    );
 
     // Apply effects based on slot type
     let updatedSlot = { ...slot };
@@ -159,28 +166,59 @@ const Game = () => {
     );
   };
 
-  const onPlayerSlotDrop = (diceId, diceValue, isRed) => {
+  // Function to handle dropping a red dice on the health slot
+  const onHealthSlotDrop = (diceId, diceValue) => {
     // Remove the used dice
     setDiceValues((prevDiceValues) =>
       prevDiceValues.filter((dice) => dice.id !== diceId)
     );
+    setSavedDice((prevSavedDice) =>
+      prevSavedDice.map((dice) => (dice && dice.id === diceId ? null : dice))
+    );
 
-    if (isRed) {
-      // Increase player health by dice value
-      setPlayerHealth((prevHealth) => prevHealth + diceValue);
-    } else if (diceValue === 5) {
-      // Add two extra dice
-      const newDiceValues = [];
-      for (let i = 0; i < 2; i++) {
-        const value = Math.floor(Math.random() * 6) + 1;
-        const isRed = Math.random() < 0.1; // 10% chance for red dice
-        newDiceValues.push({ id: uuidv4(), value, isRed });
-      }
-      setDiceValues((prevDiceValues) => [...prevDiceValues, ...newDiceValues]);
+    // Increase player health by dice value
+    setPlayerHealth((prevHealth) => prevHealth + diceValue);
+  };
+
+  // Function to handle dropping a dice with value 5 on the dice change slot
+  const onDiceChangeSlotDrop = (diceId) => {
+    // Remove the used dice
+    setDiceValues((prevDiceValues) =>
+      prevDiceValues.filter((dice) => dice.id !== diceId)
+    );
+    setSavedDice((prevSavedDice) =>
+      prevSavedDice.map((dice) => (dice && dice.id === diceId ? null : dice))
+    );
+
+    // Add two extra dice
+    const newDiceValues = [];
+    for (let i = 0; i < 2; i++) {
+      const value = Math.floor(Math.random() * 6) + 1;
+      const isRed = Math.random() < 0.1; // 10% chance for red dice
+      const position = {
+        top: Math.random() * 80 + "%",
+        left: Math.random() * 80 + "%",
+      };
+      newDiceValues.push({ id: uuidv4(), value, isRed, position });
     }
+    setDiceValues((prevDiceValues) => [...prevDiceValues, ...newDiceValues]);
   };
 
   const endTurn = () => {
+    // Automatically save unused dice if there are empty save slots
+    setSavedDice((prevSavedDice) => {
+      const newSavedDice = [...prevSavedDice];
+      let diceToSave = diceValues.slice(); // Copy of remaining dice
+      for (let i = 0; i < newSavedDice.length; i++) {
+        if (newSavedDice[i] == null && diceToSave.length > 0) {
+          newSavedDice[i] = diceToSave.shift();
+        }
+      }
+      // After saving, any remaining dice should be discarded
+      setDiceValues([]); // Clear diceValues to remove unsaved dice
+      return newSavedDice;
+    });
+
     // Calculate enemy attack
     const totalEnemyAttack = enemies
       .filter((enemy) => {
@@ -203,11 +241,11 @@ const Game = () => {
       setCurrentStage((prevStage) => prevStage + 1);
       setEnemies([]); // Clear enemies to trigger useEffect
       setDiceThrown(false);
-      setDiceValues([]);
+      // Dice are already cleared above
     } else {
       setEnemies(aliveEnemies);
       setDiceThrown(false);
-      setDiceValues([]);
+      // Dice are already cleared above
     }
   };
 
@@ -283,6 +321,7 @@ const Game = () => {
             value={dice.value}
             isRed={dice.isRed}
             isRolling={true}
+            position={dice.position}
           />
         ))}
         {diceValues.map((dice) => (
@@ -291,6 +330,7 @@ const Game = () => {
             id={dice.id}
             value={dice.value}
             isRed={dice.isRed}
+            position={dice.position}
           />
         ))}
       </div>
@@ -298,7 +338,8 @@ const Game = () => {
       <div className="player-section">
         <PlayerCard
           playerHealth={playerHealth}
-          onPlayerSlotDrop={onPlayerSlotDrop}
+          onHealthSlotDrop={onHealthSlotDrop}
+          onDiceChangeSlotDrop={onDiceChangeSlotDrop}
         />
         <button
           onClick={throwDice}
