@@ -271,7 +271,7 @@ const Game = () => {
         const newDiceValues = [];
         for (let i = 0; i < ability.amount; i++) {
           const value = Math.floor(Math.random() * 6) + 1;
-          const isRed = Math.random() < 0.1; // 10% chance for red dice
+          const isRed = Math.random() < 0.15; // 10% chance for red dice
           const position = {
             top: Math.random() * 80 + "%",
             left: Math.random() * 80 + "%",
@@ -307,6 +307,7 @@ const Game = () => {
           }))
         );
         break;
+
       default:
         break;
     }
@@ -371,6 +372,9 @@ const Game = () => {
       case "healCompanion":
         setCompanionHealth((prevHealth) => prevHealth + ability.amount);
         setCompanionHealAnimation(true); // Trigger heal animation
+        break;
+      case "dut":
+        alert("Düt!");
         break;
       default:
         break;
@@ -548,7 +552,7 @@ const Game = () => {
           break;
         case "heal":
           setPlayerHealth((prevHealth) => prevHealth + selectedBuff.amount);
-          setPlayerHealAnimation(true); // Trigger heal animation
+          setPlayerHealAnimation(true);
           break;
         case "damageReduction":
           setBuffs((prevBuffs) => ({
@@ -567,7 +571,7 @@ const Game = () => {
       setShowShop(false);
       setShowCompanionShop(true);
     } else {
-      alert("Not enough coins!");
+      alert("Yeterli coin yok!");
     }
   };
 
@@ -585,7 +589,7 @@ const Game = () => {
       setShowCompanionShop(false);
       startNewStage();
     } else {
-      alert("Not enough coins!");
+      alert("Yeterli coin yok!");
     }
   };
 
@@ -629,8 +633,6 @@ const Game = () => {
   const selectPlayerCharacter = (player) => {
     setSelectedPlayer(player);
     setPlayerHealth(player.health);
-    // Move to the next step or start the game
-    // For this example, we'll enable the Start Game button after selection
   };
 
   if (showShop) {

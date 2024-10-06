@@ -46,6 +46,21 @@ const companionData = [
     cost: 5,
     image: "/images/companion-kaplumbaga.png",
   },
+  {
+    id: "companion4",
+    name: "Boş Gezenin Boş Kalfası",
+    description: "Bir şey yapamaz.",
+    ability: {
+      name: "Düdük",
+      type: "dut",
+      activationType: "diceValue",
+      diceValue: 1,
+      amount: 1,
+      slotText: "1=",
+    },
+    cost: 5,
+    image: "/images/bos-gezen.png",
+  },
 ];
 
 export default companionData;

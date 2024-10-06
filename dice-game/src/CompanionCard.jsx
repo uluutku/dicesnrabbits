@@ -50,7 +50,7 @@ const CompanionCard = ({
       }`}
     >
       {/* Health Slot */}
-      <div className="companion-health-slot">HP: {companionHealth}</div>
+      <div className="companion-health-slot">Can: {companionHealth}</div>
 
       {/* Avatar Image */}
       <img
