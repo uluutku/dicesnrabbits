@@ -27,6 +27,10 @@
 }
 
 .saved-dice-slot .dice {
-  margin: 0;
-  position: relative; /* Override absolute positioning */
+  display: flex; /* Add flexbox to dice */
+  align-items: center; /* Vertically center the dice */
+  justify-content: center; /* Horizontally center the dice */
+  position: relative; /* Ensure relative positioning for centering */
+  width: 90%; /* Make sure the dice takes up the full width */
+  height: 90%; /* Make sure the dice takes up the full height */
 }
