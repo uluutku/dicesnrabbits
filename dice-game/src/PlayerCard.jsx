@@ -15,7 +15,6 @@ const PlayerCard = ({
   onAbilitySlotDrop,
   abilityReady,
   useAbility,
-  abilityDice,
 }) => {
   // Health Slot (Accepts red dice to heal)
   const [{ isOverHealthSlot, canDropHealthSlot }, healthSlotRef] = useDrop(
@@ -85,9 +84,6 @@ const PlayerCard = ({
         alt={selectedPlayer.name}
         className="avatar-image"
       />
-
-      {/* Coins Display */}
-      <div className="coins-display">Coins: {playerCoins}</div>
 
       {/* Buffs Display */}
       <div className="buffs-display">

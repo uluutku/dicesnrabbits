@@ -2,6 +2,7 @@
 
 .player-card {
   width: 200px;
+  height: 300px;
   padding: 20px;
   border: 2px solid green;
   border-radius: 10px;
@@ -16,33 +17,20 @@
   border: 2px dashed #555;
   border-radius: 5px;
   position: absolute;
-  top: -10px;
-  left: -10px;
+  top: 5px;
+  left: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #f9f9f9;
   font-weight: bold;
-}
-
-.dice-change-slot {
-  width: 50px;
-  height: 50px;
-  border: 2px dashed #555;
-  border-radius: 5px;
-  margin: 10px auto 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  background-color: #f9f9f9;
-  position: relative;
 }
 
 .avatar-image {
-  width: 100px;
+  width: 80%;
   height: auto;
-  margin-top: 30px;
+  margin-top: 20px;
+  border-radius: 12px;
 }
 
 .coins-display {
@@ -51,7 +39,7 @@
 }
 
 .buffs-display {
-  margin-top: 10px;
+  margin-top: 0px;
   text-align: left;
 }
 
@@ -120,7 +108,7 @@
     box-shadow: 0 0 0px green;
   }
   to {
-    box-shadow: 0 0 20px green;
+    box-shadow: 0 0 30px green;
   }
 }
 

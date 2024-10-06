@@ -14,7 +14,7 @@ const companionData = [
       slotText: "=3", // Text to display on the ability slot
     },
     cost: 5,
-    image: "/images/healing_fairy.png",
+    image: "/images/generic.png",
   },
   {
     id: "companion2",
@@ -29,7 +29,7 @@ const companionData = [
       slotText: "Red Dice",
     },
     cost: 5,
-    image: "/images/fire_spirit.png",
+    image: "/images/generic.png",
   },
   {
     id: "companion3",
@@ -44,7 +44,7 @@ const companionData = [
       slotText: "=6",
     },
     cost: 5,
-    image: "/images/guardian_golem.png",
+    image: "/images/generic.png",
   },
 ];
 

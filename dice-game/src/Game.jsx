@@ -703,15 +703,10 @@ const Game = () => {
         <>
           {/* Coin Status at the top right */}
           <div className="coin-status">
-            <img
-              src="/images/coin_icon.png"
-              alt="Coins"
-              className="coin-icon"
-            />
+            <img src="/images/coin.png" alt="Coins" className="coin-icon" />
             <span>{playerCoins}</span>
           </div>
 
-          <h1>Dices & Rabbits</h1>
           <p className="stage-info">
             Stage: {currentStage} ({getDifficultyLabel()})
           </p>
@@ -808,11 +803,7 @@ const Game = () => {
           {/* Coin Animation */}
           {coinAnimation && (
             <div className="coin-animation">
-              <img
-                src="/images/coin_icon.png"
-                alt="Coin"
-                className="coin-image"
-              />
+              <img src="/images/coin.png" alt="Coin" className="coin-image" />
             </div>
           )}
         </>

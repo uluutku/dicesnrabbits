@@ -15,7 +15,7 @@ const playerData = [
       slotText: "=5",
       description: "Drop a dice with value 5 to gain 2 extra dice.",
     },
-    image: "/images/rabbit_wizard.png",
+    image: "/images/generic.png",
   },
   {
     id: "player2",
@@ -31,7 +31,7 @@ const playerData = [
       slotText: "=6",
       description: "Drop a dice with value 6 to deal 5 damage to all enemies.",
     },
-    image: "/images/warrior_bear.png",
+    image: "/images/generic.png",
   },
   {
     id: "player3",
@@ -47,7 +47,7 @@ const playerData = [
       slotText: "=4",
       description: "Drop a dice with value 4 to heal yourself by 10 HP.",
     },
-    image: "/images/healer_fox.png",
+    image: "/images/generic.png",
   },
 ];
 
