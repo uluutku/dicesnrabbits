@@ -139,7 +139,7 @@ const Game = () => {
       const newDiceValues = [];
       for (let i = 0; i < totalDice; i++) {
         const value = Math.floor(Math.random() * 6) + 1;
-        const isRed = Math.random() < 0.15; // 10% chance for red dice
+        const isRed = Math.random() < 0.15; // 15% chance for red dice
         const position = {
           top: Math.random() * 60 + "%",
           left: Math.random() * 60 + "%",
@@ -271,7 +271,7 @@ const Game = () => {
         const newDiceValues = [];
         for (let i = 0; i < ability.amount; i++) {
           const value = Math.floor(Math.random() * 6) + 1;
-          const isRed = Math.random() < 0.15; // 10% chance for red dice
+          const isRed = Math.random() < 0.15; // 15% chance for red dice
           const position = {
             top: Math.random() * 80 + "%",
             left: Math.random() * 80 + "%",
@@ -372,9 +372,6 @@ const Game = () => {
       case "healCompanion":
         setCompanionHealth((prevHealth) => prevHealth + ability.amount);
         setCompanionHealAnimation(true); // Trigger heal animation
-        break;
-      case "dut":
-        alert("Düt!");
         break;
       default:
         break;
@@ -640,8 +637,7 @@ const Game = () => {
       <div className="game-container">
         {/* Coin Status at the top right */}
         <div className="coin-status">
-          <img src="/images/coin_icon.png" alt="Coins" className="coin-icon" />
-          <span>{playerCoins}</span>
+          <span> 🪙 {playerCoins}</span>
         </div>
         <Shop onSelectBuff={handleBuffSelection} playerCoins={playerCoins} />
       </div>
@@ -653,8 +649,7 @@ const Game = () => {
       <div className="game-container">
         {/* Coin Status at the top right */}
         <div className="coin-status">
-          <img src="/images/coin_icon.png" alt="Coins" className="coin-icon" />
-          <span>{playerCoins}</span>
+          <span> 🪙 {playerCoins}</span>
         </div>
         <CompanionShop
           onSelectCompanion={handleCompanionSelection}
@@ -767,22 +762,15 @@ const Game = () => {
                 />
               )}
             </div>
-            <button
-              onClick={throwDice}
-              disabled={diceThrown}
-              className="action-button"
-            >
-              Zar At
-            </button>
           </div>
 
-          <div className="end-turn-button">
+          {/* Merged Action Button */}
+          <div className="action-button-container">
             <button
-              onClick={endTurn}
-              disabled={!diceThrown}
+              onClick={diceThrown ? endTurn : throwDice}
               className="action-button"
             >
-              Eli Bitir
+              {diceThrown ? "Eli Bitir" : "Zar At"}
             </button>
           </div>
 
