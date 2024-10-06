@@ -425,6 +425,20 @@ const Game = () => {
     setPlayerHealAnimation(true); // Trigger heal animation
   };
 
+  const onCompanionHealthSlotDrop = (diceId, diceValue) => {
+    // Remove the used dice
+    setDiceValues((prevDiceValues) =>
+      prevDiceValues.filter((dice) => dice.id !== diceId)
+    );
+    setSavedDice((prevSavedDice) =>
+      prevSavedDice.map((dice) => (dice && dice.id === diceId ? null : dice))
+    );
+
+    // Increase companion health by dice value
+    setCompanionHealth((prevHealth) => prevHealth + diceValue);
+    setCompanionHealAnimation(true); // Trigger heal animation
+  };
+
   const endTurn = () => {
     // Automatically save unused dice if there are empty save slots
     setSavedDice((prevSavedDice) => {
@@ -781,6 +795,7 @@ const Game = () => {
                   damageAnimation={companionDamageAnimation}
                   healAnimation={companionHealAnimation}
                   onAbilitySlotDrop={onCompanionAbilitySlotDrop}
+                  onHealthSlotDrop={onCompanionHealthSlotDrop}
                   abilityReady={companionAbilityReady}
                   useAbility={useCompanionAbility}
                   abilityDice={companionAbilityDice}

@@ -1,4 +1,3 @@
-// CompanionCard.jsx
 import React from "react";
 import { useDrop } from "react-dnd";
 import "./CompanionCard.css";
@@ -8,17 +7,33 @@ const CompanionCard = ({
   companionHealth,
   damageAnimation,
   healAnimation,
+  onHealthSlotDrop, // New prop for handling health dice drop
   onAbilitySlotDrop,
   abilityReady,
   useAbility,
   abilityDice,
 }) => {
+  // Health Slot (Accepts red dice to heal companion)
+  const [{ isOverHealthSlot, canDropHealthSlot }, healthSlotRef] = useDrop(
+    () => ({
+      accept: "DICE",
+      canDrop: (item) => item.isRed, // Only red dice can heal
+      drop: (item) => {
+        onHealthSlotDrop(item.id, item.value);
+      },
+      collect: (monitor) => ({
+        isOverHealthSlot: !!monitor.isOver(),
+        canDropHealthSlot: monitor.canDrop(),
+      }),
+    }),
+    [onHealthSlotDrop]
+  );
+
   // Ability Slot
   const [{ isOverAbilitySlot, canDropAbilitySlot }, abilitySlotRef] = useDrop(
     () => ({
       accept: "DICE",
       canDrop: (item) => {
-        // Define the dice that can activate the companion's ability
         if (companion && companion.ability) {
           const ability = companion.ability;
           switch (ability.activationType) {
@@ -50,7 +65,14 @@ const CompanionCard = ({
       }`}
     >
       {/* Health Slot */}
-      <div className="companion-health-slot">Can: {companionHealth}</div>
+      <div
+        ref={healthSlotRef}
+        className={`companion-health-slot ${
+          isOverHealthSlot && canDropHealthSlot ? "hover" : ""
+        } ${!canDropHealthSlot && isOverHealthSlot ? "invalid" : ""}`}
+      >
+        HP: {companionHealth}
+      </div>
 
       {/* Avatar Image */}
       <img
