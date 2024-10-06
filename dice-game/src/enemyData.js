@@ -39,7 +39,7 @@ const enemyData = [
       { id: "slot2", type: "exact", value: 5 },
       { id: "slot3", type: "higher", value: 4 },
     ],
-    image: "/images/generic.png",
+    image: "/images/hayin-kurba.png",
   },
   {
     id: "enemy4",
