@@ -708,9 +708,7 @@ const Game = () => {
             <span> 🪙 {playerCoins}</span>
           </div>
 
-          <p className="stage-info">
-            Bölüm: {currentStage} ({getDifficultyLabel()})
-          </p>
+          <p className="stage-info">Bölüm: {currentStage}</p>
 
           <div className="enemy-section">
             {enemies.map((enemy) => (
