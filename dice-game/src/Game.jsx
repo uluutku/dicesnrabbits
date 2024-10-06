@@ -137,15 +137,41 @@ const Game = () => {
     if (!diceThrown) {
       const totalDice = 2 + buffs.extraDice;
       const newDiceValues = [];
+      const minimumDistance = 20; // Minimum distance between dice in percentage
+
+      const generateRandomPosition = (existingPositions) => {
+        let position;
+        let isOverlapping;
+        do {
+          position = {
+            top: Math.random() * 60 + "%",
+            left: Math.random() * 60 + "%",
+          };
+          isOverlapping = existingPositions.some((pos) => {
+            const topDifference = Math.abs(
+              parseFloat(pos.top) - parseFloat(position.top)
+            );
+            const leftDifference = Math.abs(
+              parseFloat(pos.left) - parseFloat(position.left)
+            );
+            return (
+              topDifference < minimumDistance &&
+              leftDifference < minimumDistance
+            );
+          });
+        } while (isOverlapping);
+        return position;
+      };
+
       for (let i = 0; i < totalDice; i++) {
         const value = Math.floor(Math.random() * 6) + 1;
         const isRed = Math.random() < 0.15; // 15% chance for red dice
-        const position = {
-          top: Math.random() * 60 + "%",
-          left: Math.random() * 60 + "%",
-        };
+        const position = generateRandomPosition(
+          newDiceValues.map((dice) => dice.position)
+        );
         newDiceValues.push({ id: uuidv4(), value, isRed, position });
       }
+
       setRollingDice(newDiceValues);
       setDiceThrown(true);
 
@@ -413,12 +439,6 @@ const Game = () => {
       setDiceValues([]); // Clear diceValues to remove unsaved dice
       return newSavedDice;
     });
-
-    // Reset ability states
-    setPlayerAbilityReady(false);
-    setCompanionAbilityReady(false);
-    setPlayerAbilityDice(null);
-    setCompanionAbilityDice(null);
 
     // Calculate enemy attacks
     const aliveEnemies = enemies.filter((enemy) => {
