@@ -3,27 +3,27 @@
 const playerData = [
   {
     id: "player1",
-    name: "Rabbit Wizard",
-    description: "A wise rabbit with magical powers.",
+    name: "Büyücü Davşan",
+    description: "Zar değiştirme büyüsü yapan bir büyücü davşan.",
     health: 50,
     ability: {
-      name: "Dice Roll",
+      name: "Zar Büyüsü",
       type: "extraDice",
       activationType: "diceValue",
       diceValue: 5,
-      amount: 2, // Adds 2 extra dice
+      amount: 2,
       slotText: "=5",
-      description: "Drop a dice with value 5 to gain 2 extra dice.",
+      description: "5= bir zarı iki yeni rastgele zara dönüştürür.",
     },
-    image: "/images/generic.png",
+    image: "/images/wizard-rabbit.png",
   },
   {
     id: "player2",
-    name: "Warrior Bear",
-    description: "A strong bear with immense strength.",
+    name: "Güşlü Ayu",
+    description: "Çok güşlü bi ayu.",
     health: 60,
     ability: {
-      name: "Power Strike",
+      name: "Güş Vuruşu",
       type: "attackEnemy",
       activationType: "diceValue",
       diceValue: 6,
@@ -35,8 +35,8 @@ const playerData = [
   },
   {
     id: "player3",
-    name: "Healer Fox",
-    description: "A cunning fox with healing abilities.",
+    name: "Şifacı Tilki",
+    description: "Şifa basan medik tilki.",
     health: 45,
     ability: {
       name: "Healing Light",

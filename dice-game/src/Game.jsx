@@ -139,10 +139,10 @@ const Game = () => {
       const newDiceValues = [];
       for (let i = 0; i < totalDice; i++) {
         const value = Math.floor(Math.random() * 6) + 1;
-        const isRed = Math.random() < 0.1; // 10% chance for red dice
+        const isRed = Math.random() < 0.15; // 10% chance for red dice
         const position = {
-          top: Math.random() * 80 + "%",
-          left: Math.random() * 80 + "%",
+          top: Math.random() * 60 + "%",
+          left: Math.random() * 60 + "%",
         };
         newDiceValues.push({ id: uuidv4(), value, isRed, position });
       }
@@ -156,7 +156,7 @@ const Game = () => {
           ...newDiceValues,
         ]);
         setRollingDice([]);
-      }, 1000); // Duration of the rolling animation
+      }, 1000);
     }
   };
 
@@ -667,7 +667,7 @@ const Game = () => {
       {gameStatus === "start" && (
         <div className="start-screen">
           <h1>Dices & Rabbits</h1>
-          <h2>Select Your Character</h2>
+          <h2>Karakterini Seç</h2>
           <div className="character-selection">
             {playerData.map((player) => (
               <div
@@ -686,14 +686,14 @@ const Game = () => {
                 />
                 <h3>{player.name}</h3>
                 <p>{player.description}</p>
-                <p>Health: {player.health}</p>
-                <p>Ability: {player.ability.name}</p>
+                <p>Can: {player.health}</p>
+                <p>Yetenek: {player.ability.name}</p>
               </div>
             ))}
           </div>
           {selectedPlayer && (
             <button onClick={startGame} className="start-button">
-              Start Game
+              Oyuna Başla
             </button>
           )}
         </div>
@@ -703,12 +703,11 @@ const Game = () => {
         <>
           {/* Coin Status at the top right */}
           <div className="coin-status">
-            <img src="/images/coin.png" alt="Coins" className="coin-icon" />
-            <span>{playerCoins}</span>
+            <span> 🪙 {playerCoins}</span>
           </div>
 
           <p className="stage-info">
-            Stage: {currentStage} ({getDifficultyLabel()})
+            Bölüm: {currentStage} ({getDifficultyLabel()})
           </p>
 
           <div className="enemy-section">
@@ -773,7 +772,7 @@ const Game = () => {
               disabled={diceThrown}
               className="action-button"
             >
-              Throw Dices
+              Zar At
             </button>
           </div>
 
@@ -783,7 +782,7 @@ const Game = () => {
               disabled={!diceThrown}
               className="action-button"
             >
-              End Turn
+              Eli Bitir
             </button>
           </div>
 
@@ -803,7 +802,7 @@ const Game = () => {
           {/* Coin Animation */}
           {coinAnimation && (
             <div className="coin-animation">
-              <img src="/images/coin.png" alt="Coin" className="coin-image" />
+              <span>🪙</span>
             </div>
           )}
         </>
@@ -811,26 +810,26 @@ const Game = () => {
 
       {gameStatus === "gameOver" && (
         <div className="end-screen">
-          <h1>Game Over!</h1>
-          <p>You reached stage {currentStage}</p>
+          <h1>Oyun bitti</h1>
+          <p>{currentStage} bölümüne kadar ilerledin.</p>
           <button
             onClick={() => setGameStatus("start")}
             className="restart-button"
           >
-            Restart Game
+            Yeniden Başla
           </button>
         </div>
       )}
 
       {gameStatus === "gameWon" && (
         <div className="end-screen">
-          <h1>Congratulations!</h1>
-          <p>You have completed all stages!</p>
+          <h1>Tebrikler!</h1>
+          <p>Tüm bölümleri tamamladın!</p>
           <button
             onClick={() => setGameStatus("start")}
             className="restart-button"
           >
-            Play Again
+            Yeniden Başla
           </button>
         </div>
       )}

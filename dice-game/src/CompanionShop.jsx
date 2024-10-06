@@ -10,8 +10,8 @@ const CompanionShop = ({ onSelectCompanion, playerCoins }) => {
 
   return (
     <div className="shop-container">
-      <h2>Companion Shop</h2>
-      <p>You have {playerCoins} coins. Select a companion to purchase:</p>
+      <h2>Yoldaş Dükkanı</h2>
+      <p>{playerCoins} coinin var. Alacak bir yoldaş seş:</p>
       <div className="companion-options">
         {companionsToShow.map((companion) => (
           <div key={companion.id} className="companion-card">
@@ -22,7 +22,7 @@ const CompanionShop = ({ onSelectCompanion, playerCoins }) => {
               className="companion-image"
             />
             <p>{companion.description}</p>
-            <p className="companion-cost">Cost: {companion.cost} coins</p>
+            <p className="companion-cost">Ücret: {companion.cost} coin</p>
             <button
               className="select-button"
               onClick={() => onSelectCompanion(companion)}

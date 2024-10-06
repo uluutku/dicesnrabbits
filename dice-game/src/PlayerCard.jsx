@@ -87,7 +87,6 @@ const PlayerCard = ({
 
       {/* Buffs Display */}
       <div className="buffs-display">
-        <h4>Buffs:</h4>
         <ul>
           {collectedBuffs.map((buff, index) => (
             <li key={index}>{buff.name}</li>

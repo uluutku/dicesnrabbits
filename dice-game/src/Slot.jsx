@@ -71,7 +71,7 @@ const Slot = ({ slot, enemyId, onDamage, isDead }) => {
 
   const getSlotLabel = () => {
     if (isClosed) {
-      return "Closed";
+      return "X";
     }
     switch (slot.type) {
       case "number":

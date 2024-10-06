@@ -11,6 +11,10 @@ body {
   height: 100vh;
   position: relative;
   overflow: hidden;
+  background-image: url("/images/tablebg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .stage-info {
@@ -51,28 +55,89 @@ body {
   align-items: flex-end;
 }
 
+/* Button Styles with Enhanced Look */
+
+/* General button styles */
+button,
+.action-button,
+.start-button,
+.restart-button {
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(135deg, #4caf50, #388e3c);
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+/* On hover, the button "lifts" with a glow */
+button:hover,
+.action-button:hover,
+.start-button:hover,
+.restart-button:hover {
+  background: linear-gradient(135deg, #66bb6a, #43a047);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 10px rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
+}
+
+/* Disabled buttons look faded */
+button:disabled,
+.action-button:disabled {
+  background: linear-gradient(135deg, #bdbdbd, #9e9e9e);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* End Turn Button */
 .end-turn-button {
+  padding: 15px 30px;
+  color: white;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+  font-size: 20px;
   position: absolute;
   top: 30%;
   right: 10px;
   transform: translateY(-50%);
 }
 
-.action-button {
-  margin-top: 10px;
-  padding: 10px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.action-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-.action-button:not(:disabled):hover {
-  background-color: #4caf50;
+/* Start and Restart Buttons */
+.start-button,
+.restart-button {
+  padding: 20px 40px;
+  background: linear-gradient(135deg, #2196f3, #1e88e5);
   color: white;
+  font-size: 22px;
+  border-radius: 15px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+  margin-top: 20px;
+}
+
+.start-button:hover,
+.restart-button:hover {
+  background: linear-gradient(135deg, #42a5f5, #2196f3);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 10px rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
+}
+
+/* Action buttons */
+.action-button {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #e91e63, #d81b60);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+  margin-top: 10px;
+}
+
+.action-button:hover {
+  background: linear-gradient(135deg, #f06292, #ec407a);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 10px rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
 }
 
 /* Dice Storage Slots */
@@ -129,18 +194,49 @@ body {
   align-items: flex-start;
 }
 
+/* Coin Status Display */
 .coin-status {
   position: absolute;
   top: 10px;
   right: 10px;
   display: flex;
   align-items: center;
+  background: linear-gradient(
+    135deg,
+    #ffffff,
+    #f0f0f0
+  ); /* Subtle gradient for modern look */
+  padding: 10px 20px;
+  border-radius: 30px; /* Rounded pill-shaped background */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Modern shadow for depth */
+  font-size: 18px;
+  font-weight: bold;
+  color: #333; /* Darker text color for contrast */
+  transition: all 0.3s ease; /* Smooth transition */
 }
 
-.coin-icon {
-  width: 30px;
-  height: auto;
-  margin-right: 5px;
+.coin-status:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Elevates on hover */
+  background: linear-gradient(
+    135deg,
+    #ffffff,
+    #e0e0e0
+  ); /* Slight color change on hover */
+}
+
+.coin-emoji {
+  font-size: 30px; /* Emoji size for visibility */
+  margin-right: 10px;
+  transition: transform 0.3s ease; /* Add animation to the emoji */
+}
+
+.coin-status:hover .coin-emoji {
+  transform: rotate(20deg); /* Adds playful movement on hover */
+}
+
+.coin-count {
+  font-size: 20px;
+  color: #333; /* Darker, modern text color */
 }
 
 /* Start and End Screens */
@@ -160,25 +256,11 @@ body {
   z-index: 1000;
 }
 
-.start-button,
-.restart-button {
-  padding: 15px 30px;
-  font-size: 18px;
-  margin-top: 20px;
-  cursor: pointer;
-}
-
-.start-button:hover,
-.restart-button:hover {
-  background-color: #2196f3;
-  color: white;
-}
-
 /* Coin Animation */
 .coin-animation {
   position: absolute;
-  top: 50%; /* Adjust as needed */
-  left: 50%; /* Adjust as needed */
+  top: 40%; /* Adjust as needed */
+  left: 30%; /* Adjust as needed */
   animation: moveCoin 1s forwards;
 }
 
@@ -192,7 +274,7 @@ body {
     transform: translate(0, 0);
   }
   to {
-    transform: translate(500px, -300px); /* Adjust based on actual positions */
+    transform: translate(60vw, -35vh); /* Adjust based on actual positions */
   }
 }
 

@@ -3,9 +3,8 @@
 const companionData = [
   {
     id: "companion1",
-    name: "Healing Fairy",
-    description:
-      "Heals the player when a dice of value 3 is dropped on her ability slot.",
+    name: "Şifacı Baykuş Ovi",
+    description: "3= bir zar kullanarak ana karakteri 5HP iyileştirir.",
     ability: {
       type: "healPlayer",
       activationType: "diceValue",
@@ -14,13 +13,12 @@ const companionData = [
       slotText: "=3", // Text to display on the ability slot
     },
     cost: 5,
-    image: "/images/generic.png",
+    image: "/images/companion-baykus.png",
   },
   {
     id: "companion2",
-    name: "Fire Spirit",
-    description:
-      "Deals 2 extra damage to all enemies when a red dice is dropped on his ability slot.",
+    name: "Tilki Suyikastçi",
+    description: "Kırmızı bir zar kullanarak tüm düşmanlara 2 hasar verir.",
     ability: {
       type: "attackEnemy",
       activationType: "diceColor",
@@ -29,13 +27,12 @@ const companionData = [
       slotText: "Red Dice",
     },
     cost: 5,
-    image: "/images/generic.png",
+    image: "/images/companion-fox.png",
   },
   {
     id: "companion3",
-    name: "Guardian Golem",
-    description:
-      "Heals himself for 4 HP when a dice of value 6 is dropped on his ability slot.",
+    name: "Can Tosba",
+    description: "6= bir zar kullanarak kendini 4HP iyileştirir.",
     ability: {
       type: "healCompanion",
       activationType: "diceValue",
@@ -44,7 +41,7 @@ const companionData = [
       slotText: "=6",
     },
     cost: 5,
-    image: "/images/generic.png",
+    image: "/images/companion-kaplumbaga.png",
   },
 ];
 

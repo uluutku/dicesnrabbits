@@ -3,21 +3,21 @@
 const enemyData = [
   {
     id: "enemy1",
-    name: "Slime",
-    description: "A weak slime creature.",
+    name: "Adi Tilki Fem",
+    description: "Sinsi hayin bir tilki.",
     attack: 1,
     difficulty: 1,
-    coinDrop: 10, // Coins dropped when defeated
+    coinDrop: 10,
     slots: [
       { id: "slot1", type: "number", value: 5 },
       { id: "slot2", type: "exact", value: 2 },
     ],
-    image: "/images/generic.png",
+    image: "/images/hayin-tilki.png",
   },
   {
     id: "enemy2",
-    name: "Goblin",
-    description: "A sneaky goblin.",
+    name: "Pis Kuzgun Fell",
+    description: "Gak. (Ya da hak.)",
     attack: 2,
     difficulty: 1,
     coinDrop: 15,
@@ -25,12 +25,12 @@ const enemyData = [
       { id: "slot1", type: "higher", value: 3 },
       { id: "slot2", type: "number", value: 4 },
     ],
-    image: "/images/generic.png",
+    image: "/images/hayin-kuzgun.png",
   },
   {
     id: "enemy3",
-    name: "Orc",
-    description: "A strong orc warrior.",
+    name: "Reflü Kurbağa Asi",
+    description: "Böğğ.",
     attack: 4,
     difficulty: 2,
     coinDrop: 20,
@@ -70,8 +70,8 @@ const enemyData = [
   },
   {
     id: "enemyBoss",
-    name: "Dragon",
-    description: "A fearsome dragon.",
+    name: "Başkuzgun Orion",
+    description: "Geşmiş olsun dostooom.",
     attack: 20,
     difficulty: 4,
     coinDrop: 100,
@@ -81,7 +81,7 @@ const enemyData = [
       { id: "slot3", type: "exact", value: 6 },
       { id: "slot4", type: "higher", value: 5 },
     ],
-    image: "/images/generic.png",
+    image: "/images/boss-kuzgun.png",
   },
   // Add more enemies as needed
 ];

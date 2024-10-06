@@ -40,7 +40,7 @@ const SavedDiceSlot = ({ savedDice, onSaveDice, onRetrieveDice }) => {
           position={{ top: "0%", left: "0%" }}
         />
       ) : (
-        "Save Dice"
+        " "
       )}
     </div>
   );

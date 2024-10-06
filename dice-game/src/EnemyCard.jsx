@@ -9,7 +9,7 @@ const EnemyCard = ({ enemy, onDamage }) => {
     <div className={`enemy-card ${isDead ? "defeated" : ""}`}>
       <img src={enemy.image} alt={enemy.name} className="enemy-image" />
       <h3>{enemy.name}</h3>
-      <p>Attack: {enemy.attack}</p>
+      <p>Güç: {enemy.attack}</p>
       {enemy.description && (
         <p className="enemy-description">{enemy.description}</p>
       )}
@@ -29,7 +29,7 @@ const EnemyCard = ({ enemy, onDamage }) => {
 
       {isDead && (
         <div className="defeated-overlay">
-          <strong>Defeated</strong>
+          <strong>Sıştı</strong>
         </div>
       )}
     </div>
