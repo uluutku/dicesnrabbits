@@ -12,51 +12,33 @@ const Dice = ({ id, value, isRed, isRolling, position }) => {
     }),
   }));
 
+  // Update renderDots to ensure the correct value is used
   const renderDots = (value) => {
     const dotPositions = {
-      1: [[2, 2]],
-      2: [
-        [1, 1],
-        [3, 3],
-      ],
-      3: [
-        [1, 1],
-        [2, 2],
-        [3, 3],
-      ],
-      4: [
-        [1, 1],
-        [1, 3],
-        [3, 1],
-        [3, 3],
-      ],
-      5: [
-        [1, 1],
-        [1, 3],
-        [2, 2],
-        [3, 1],
-        [3, 3],
-      ],
+      1: ["center"],
+      2: ["top-left", "bottom-right"],
+      3: ["top-left", "center", "bottom-right"],
+      4: ["top-left", "top-right", "bottom-left", "bottom-right"],
+      5: ["top-left", "top-right", "center", "bottom-left", "bottom-right"],
       6: [
-        [1, 1],
-        [1, 2],
-        [1, 3],
-        [3, 1],
-        [3, 2],
-        [3, 3],
+        "top-left",
+        "top-right",
+        "middle-left",
+        "middle-right",
+        "bottom-left",
+        "bottom-right",
       ],
     };
 
-    return dotPositions[value].map(([row, col], index) => (
-      <div
-        key={index}
-        className="dot"
-        style={{
-          gridRow: row,
-          gridColumn: col,
-        }}
-      ></div>
-    ));
+    const positions = dotPositions[value] || [];
+
+    return (
+      <div className="dice-dots">
+        {positions.map((pos, index) => (
+          <div key={index} className={`dot ${pos}`}></div>
+        ))}
+      </div>
+    );
   };
 
   return (

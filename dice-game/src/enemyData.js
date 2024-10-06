@@ -9,7 +9,7 @@ const enemyData = [
     difficulty: 1,
     coinDrop: 10,
     slots: [
-      { id: "slot1", type: "number", value: 5 },
+      { id: "slot1", type: "exact", value: 5 },
       { id: "slot2", type: "lower", value: 3 },
     ],
     image: "/images/hayin-tilki.png",
@@ -22,7 +22,7 @@ const enemyData = [
     difficulty: 1,
     coinDrop: 15,
     slots: [
-      { id: "slot1", type: "higher", value: 3 },
+      { id: "slot1", type: "exact", value: 3 },
       { id: "slot2", type: "number", value: 4 },
     ],
     image: "/images/hayin-kuzgun.png",

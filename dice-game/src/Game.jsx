@@ -373,6 +373,9 @@ const Game = () => {
         setCompanionHealth((prevHealth) => prevHealth + ability.amount);
         setCompanionHealAnimation(true); // Trigger heal animation
         break;
+      case "dut":
+        alert("Düt!");
+        break;
       default:
         break;
     }
@@ -637,7 +640,8 @@ const Game = () => {
       <div className="game-container">
         {/* Coin Status at the top right */}
         <div className="coin-status">
-          <span> 🪙 {playerCoins}</span>
+          <img src="/images/coin_icon.png" alt="Coins" className="coin-icon" />
+          <span>{playerCoins}</span>
         </div>
         <Shop onSelectBuff={handleBuffSelection} playerCoins={playerCoins} />
       </div>
@@ -649,7 +653,8 @@ const Game = () => {
       <div className="game-container">
         {/* Coin Status at the top right */}
         <div className="coin-status">
-          <span> 🪙 {playerCoins}</span>
+          <img src="/images/coin_icon.png" alt="Coins" className="coin-icon" />
+          <span>{playerCoins}</span>
         </div>
         <CompanionShop
           onSelectCompanion={handleCompanionSelection}
@@ -762,15 +767,22 @@ const Game = () => {
                 />
               )}
             </div>
-          </div>
-
-          {/* Merged Action Button */}
-          <div className="action-button-container">
             <button
-              onClick={diceThrown ? endTurn : throwDice}
+              onClick={throwDice}
+              disabled={diceThrown}
               className="action-button"
             >
-              {diceThrown ? "Eli Bitir" : "Zar At"}
+              Zar At
+            </button>
+          </div>
+
+          <div className="end-turn-button">
+            <button
+              onClick={endTurn}
+              disabled={!diceThrown}
+              className="action-button"
+            >
+              Eli Bitir
             </button>
           </div>
 

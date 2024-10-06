@@ -36,7 +36,7 @@ const Slot = ({ slot, enemyId, onDamage, isDead }) => {
       },
       drop: (item) => {
         if (!isDead && !isClosed) {
-          onDamage(enemyId, slot, item.id, item.value);
+          onDamage(enemyId, slot, item.id, item.value, item.isRed);
           setIsDamaged(true);
         }
       },
@@ -69,19 +69,57 @@ const Slot = ({ slot, enemyId, onDamage, isDead }) => {
     }
   }, [isInvalidDrop]);
 
-  const getSlotLabel = () => {
+  const renderDiceDots = (value) => {
+    const dotPositions = {
+      1: ["center"],
+      2: ["top-left", "bottom-right"],
+      3: ["top-left", "center", "bottom-right"],
+      4: ["top-left", "top-right", "bottom-left", "bottom-right"],
+      5: ["top-left", "top-right", "center", "bottom-left", "bottom-right"],
+      6: [
+        "top-left",
+        "top-right",
+        "middle-left",
+        "middle-right",
+        "bottom-left",
+        "bottom-right",
+      ],
+    };
+
+    const positions = dotPositions[value] || [];
+
+    return (
+      <div className="dice-dots">
+        {positions.map((pos, index) => (
+          <div key={index} className={`dot ${pos}`}></div>
+        ))}
+      </div>
+    );
+  };
+
+  const getSlotContent = () => {
     if (isClosed) {
       return "X";
     }
     switch (slot.type) {
       case "number":
-        return slot.value;
+        return <span className="slot-number">{slot.value}</span>;
       case "exact":
-        return `=${slot.value}`;
+        return <div className="dice-face">{renderDiceDots(slot.value)}</div>;
       case "higher":
-        return `${slot.value}+`;
+        return (
+          <div className="slot-arrow">
+            <span className="slot-number">{slot.value}</span>
+            <span className="arrow-right">↑</span>
+          </div>
+        );
       case "lower":
-        return `${slot.value}-`;
+        return (
+          <div className="slot-arrow">
+            <span className="slot-number">{slot.value}</span>
+            <span className="arrow-right">↓</span>
+          </div>
+        );
       default:
         return "";
     }
@@ -96,7 +134,7 @@ const Slot = ({ slot, enemyId, onDamage, isDead }) => {
         isInvalidDrop ? "invalid-drop" : ""
       }`}
     >
-      {getSlotLabel()}
+      {getSlotContent()}
     </div>
   );
 };

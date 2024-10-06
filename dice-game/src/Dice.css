@@ -27,9 +27,16 @@
 .dots-container {
   width: 100%;
   height: 100%;
-  display: grid;
-  grid-template-rows: repeat(3, 1fr);
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.dice-dots {
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
 .dot {
@@ -37,8 +44,45 @@
   height: 10px;
   background-color: #000;
   border-radius: 50%;
-  justify-self: center;
-  align-self: center;
+  position: absolute;
+}
+
+.dot.center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.dot.top-left {
+  top: 10%;
+  left: 10%;
+}
+
+.dot.top-right {
+  top: 10%;
+  right: 10%;
+}
+
+.dot.middle-left {
+  top: 50%;
+  left: 10%;
+  transform: translateY(-50%);
+}
+
+.dot.middle-right {
+  top: 50%;
+  right: 10%;
+  transform: translateY(-50%);
+}
+
+.dot.bottom-left {
+  bottom: 10%;
+  left: 10%;
+}
+
+.dot.bottom-right {
+  bottom: 10%;
+  right: 10%;
 }
 
 .dice.rolling {
