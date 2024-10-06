@@ -6,23 +6,23 @@ const Shop = ({ onSelectBuff, playerCoins }) => {
   const buffOptions = [
     {
       id: "buff1",
-      name: "Extra Dice",
-      description: "Gain one extra dice per turn.",
+      name: "Extra Zar",
+      description: "Her tur atmak işin fazladan bir zar.",
       type: "extraDice",
       cost: 15,
     },
     {
       id: "buff2",
-      name: "Heal",
-      description: "Restore 10 health points.",
+      name: "İyileşme",
+      description: "Ana karakterin 10 can yeniler.",
       type: "heal",
       amount: 10,
       cost: 10,
     },
     {
       id: "buff3",
-      name: "Shield",
-      description: "Reduce enemy damage by 1.",
+      name: "Kalkan",
+      description: "Ana karakterin artık 1 hasar az alır.",
       type: "damageReduction",
       amount: 1,
       cost: 20,
@@ -36,20 +36,20 @@ const Shop = ({ onSelectBuff, playerCoins }) => {
 
   return (
     <div className="shop-container">
-      <h2>Shop</h2>
-      <p>You have {playerCoins} coins. Select a buff to purchase:</p>
+      <h2>Tükkan</h2>
+      <p>{playerCoins} coinin var. Satın almak için bir güç seç:</p>
       <div className="buff-options">
         {buffsToShow.map((buff) => (
           <div key={buff.id} className="buff-card">
             <h3>{buff.name}</h3>
             <p>{buff.description}</p>
-            <p className="buff-cost">Cost: {buff.cost} coins</p>
+            <p className="buff-cost">Fiyat: {buff.cost} coin</p>
             <button
               className="select-button"
               onClick={() => onSelectBuff(buff)}
               disabled={playerCoins < buff.cost}
             >
-              {playerCoins >= buff.cost ? "Purchase" : "Insufficient Coins"}
+              {playerCoins >= buff.cost ? "Satın Al" : "Yetersiz Bakiye"}
             </button>
           </div>
         ))}

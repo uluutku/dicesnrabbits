@@ -10,7 +10,7 @@ const enemyData = [
     coinDrop: 10,
     slots: [
       { id: "slot1", type: "number", value: 5 },
-      { id: "slot2", type: "exact", value: 2 },
+      { id: "slot2", type: "lower", value: 3 },
     ],
     image: "/images/hayin-tilki.png",
   },

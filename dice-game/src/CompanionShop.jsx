@@ -28,9 +28,7 @@ const CompanionShop = ({ onSelectCompanion, playerCoins }) => {
               onClick={() => onSelectCompanion(companion)}
               disabled={playerCoins < companion.cost}
             >
-              {playerCoins >= companion.cost
-                ? "Purchase"
-                : "Insufficient Coins"}
+              {playerCoins >= companion.cost ? "Sayın Al" : "Yetersiz Bakiye"}
             </button>
           </div>
         ))}

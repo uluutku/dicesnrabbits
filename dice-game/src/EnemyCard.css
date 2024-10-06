@@ -16,6 +16,10 @@
   opacity: 0.9;
 }
 
+.enemy-card.defeated {
+  transition: background-color 1s ease, opacity 1s ease;
+}
+
 .enemy-card .defeated-overlay {
   position: absolute;
   top: 0;
@@ -39,10 +43,10 @@
 
 .enemy-image {
   min-width: 100px;
-  min-height: 100px;
-  border: 1px solid;
+  height: 200px;
+  object-fit: cover;
   width: 100%;
-  height: auto;
+  border: 1px solid;
   border-radius: 12px;
   margin-bottom: 5px;
 }

@@ -1,14 +1,14 @@
 /* CompanionCard.css */
 
 .companion-card {
-  width: 200px;
-  padding: 20px;
-  border: 2px solid blue;
-  border-radius: 10px;
-  background-color: #e0e0ff;
+  width: 200px; /* Matched to enemy and player card */
+  border: 2px solid rgb(154, 107, 107); /* Matched to enemy and player card */
+  border-radius: 12px; /* Matched to enemy and player card */
+  padding: 10px; /* Matched to enemy and player card */
+  margin: 5px;
+  background-color: #e0e0ff; /* Unique color for companion */
   text-align: center;
   position: relative;
-  margin-top: 20px;
 }
 
 .companion-health-slot {
@@ -27,9 +27,13 @@
 }
 
 .companion-avatar-image {
-  width: 100px;
-  height: auto;
-  margin-top: 30px;
+  min-width: 100px; /* Matched to enemy and player image */
+  height: 200px; /* Matched to enemy and player image */
+  object-fit: cover;
+  width: 100%; /* Matched to enemy and player image */
+  border: 1px solid black;
+  border-radius: 12px; /* Matched to enemy and player image */
+  margin-bottom: 10px;
 }
 
 .companion-name {
@@ -109,20 +113,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.companion-ability-slot {
-  width: 50px;
-  height: 50px;
-  border: 2px dashed #555;
-  border-radius: 5px;
-  margin-bottom: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  background-color: #f0f0ff;
-  position: relative;
 }
 
 .use-ability-button {
