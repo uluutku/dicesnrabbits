@@ -8,12 +8,16 @@ const PlayerCard = ({
   playerCoins,
   buffs,
   collectedBuffs,
-  onHealthSlotDrop,
-  onDiceChangeSlotDrop,
   damageAnimation,
   healAnimation,
+  selectedPlayer,
+  onHealthSlotDrop, // Added back
+  onAbilitySlotDrop,
+  abilityReady,
+  useAbility,
+  abilityDice,
 }) => {
-  // Health Slot (Top Left)
+  // Health Slot (Accepts red dice to heal)
   const [{ isOverHealthSlot, canDropHealthSlot }, healthSlotRef] = useDrop(
     () => ({
       accept: "DICE",
@@ -29,22 +33,35 @@ const PlayerCard = ({
     [onHealthSlotDrop]
   );
 
-  // Dice Change Slot (Bottom)
-  const [{ isOverDiceChangeSlot, canDropDiceChangeSlot }, diceChangeSlotRef] =
-    useDrop(
-      () => ({
-        accept: "DICE",
-        canDrop: (item) => item.value === 5, // Accept only dice with value 5
-        drop: (item) => {
-          onDiceChangeSlotDrop(item.id);
-        },
-        collect: (monitor) => ({
-          isOverDiceChangeSlot: !!monitor.isOver(),
-          canDropDiceChangeSlot: monitor.canDrop(),
-        }),
+  // Ability Slot
+  const [{ isOverAbilitySlot, canDropAbilitySlot }, abilitySlotRef] = useDrop(
+    () => ({
+      accept: "DICE",
+      canDrop: (item) => {
+        // Define the dice that can activate the player's ability
+        if (selectedPlayer && selectedPlayer.ability) {
+          const ability = selectedPlayer.ability;
+          switch (ability.activationType) {
+            case "diceValue":
+              return item.value === ability.diceValue;
+            case "diceColor":
+              return ability.diceColor === "red" && item.isRed;
+            default:
+              return false;
+          }
+        }
+        return false;
+      },
+      drop: (item) => {
+        onAbilitySlotDrop(item.id, item.value, item.isRed);
+      },
+      collect: (monitor) => ({
+        isOverAbilitySlot: !!monitor.isOver(),
+        canDropAbilitySlot: monitor.canDrop(),
       }),
-      [onDiceChangeSlotDrop]
-    );
+    }),
+    [selectedPlayer, onAbilitySlotDrop]
+  );
 
   return (
     <div
@@ -64,8 +81,8 @@ const PlayerCard = ({
 
       {/* Avatar Image */}
       <img
-        src="/images/rabbit_wizard.png"
-        alt="Rabbit Wizard"
+        src={selectedPlayer.image}
+        alt={selectedPlayer.name}
         className="avatar-image"
       />
 
@@ -82,14 +99,24 @@ const PlayerCard = ({
         </ul>
       </div>
 
-      {/* Dice Change Slot */}
-      <div
-        ref={diceChangeSlotRef}
-        className={`dice-change-slot ${
-          isOverDiceChangeSlot && canDropDiceChangeSlot ? "hover" : ""
-        } ${!canDropDiceChangeSlot && isOverDiceChangeSlot ? "invalid" : ""}`}
-      >
-        =5
+      {/* Ability Section */}
+      <div className="ability-section">
+        <div
+          ref={abilitySlotRef}
+          className={`ability-slot ${
+            isOverAbilitySlot && canDropAbilitySlot ? "hover" : ""
+          } ${!canDropAbilitySlot && isOverAbilitySlot ? "invalid" : ""}`}
+        >
+          {selectedPlayer.ability.slotText}
+        </div>
+        <button
+          className="use-ability-button"
+          onClick={useAbility}
+          disabled={!abilityReady}
+          title={selectedPlayer.ability.description}
+        >
+          {selectedPlayer.ability.name}
+        </button>
       </div>
     </div>
   );

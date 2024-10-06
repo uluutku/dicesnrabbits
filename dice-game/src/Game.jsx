@@ -9,6 +9,7 @@ import Shop from "./Shop";
 import CompanionShop from "./CompanionShop";
 import enemyData from "./enemyData";
 import companionData from "./companionData";
+import playerData from "./playerData"; // Import player character data
 import { v4 as uuidv4 } from "uuid";
 import "./Game.css";
 
@@ -43,6 +44,17 @@ const Game = () => {
     useState(false);
   const [companionHealAnimation, setCompanionHealAnimation] = useState(false);
   const [coinAnimation, setCoinAnimation] = useState(false);
+
+  // Ability activation states
+  const [playerAbilityReady, setPlayerAbilityReady] = useState(false);
+  const [companionAbilityReady, setCompanionAbilityReady] = useState(false);
+
+  // Dice in ability slots
+  const [playerAbilityDice, setPlayerAbilityDice] = useState(null);
+  const [companionAbilityDice, setCompanionAbilityDice] = useState(null);
+
+  // Selected player character
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   // Initialize enemies or show shop at the start
   useEffect(() => {
@@ -224,43 +236,84 @@ const Game = () => {
     );
   };
 
-  // Function to handle dropping a red dice on the health slot
-  const onHealthSlotDrop = (diceId, diceValue) => {
-    // Remove the used dice
+  // Function to handle dropping a dice on the player's ability slot
+  const onPlayerAbilitySlotDrop = (diceId, diceValue, isRed) => {
+    if (!selectedPlayer || !selectedPlayer.ability) return;
+
+    // Remove the used dice from diceValues
     setDiceValues((prevDiceValues) =>
       prevDiceValues.filter((dice) => dice.id !== diceId)
     );
+
+    // Remove from saved dice if present
     setSavedDice((prevSavedDice) =>
       prevSavedDice.map((dice) => (dice && dice.id === diceId ? null : dice))
     );
 
-    // Increase player health by dice value
-    setPlayerHealth((prevHealth) => prevHealth + diceValue);
-    setPlayerHealAnimation(true); // Trigger heal animation
+    // Place the dice in the player's ability slot
+    setPlayerAbilityDice({ id: diceId, value: diceValue, isRed });
+
+    // Enable the ability button
+    setPlayerAbilityReady(true);
   };
 
-  // Function to handle dropping a dice with value 5 on the dice change slot
-  const onDiceChangeSlotDrop = (diceId) => {
-    // Remove the used dice
-    setDiceValues((prevDiceValues) =>
-      prevDiceValues.filter((dice) => dice.id !== diceId)
-    );
-    setSavedDice((prevSavedDice) =>
-      prevSavedDice.map((dice) => (dice && dice.id === diceId ? null : dice))
-    );
+  // Function to handle using the player's ability
+  const usePlayerAbility = () => {
+    if (!playerAbilityReady || !selectedPlayer || !selectedPlayer.ability)
+      return;
 
-    // Add two extra dice
-    const newDiceValues = [];
-    for (let i = 0; i < 2; i++) {
-      const value = Math.floor(Math.random() * 6) + 1;
-      const isRed = Math.random() < 0.1; // 10% chance for red dice
-      const position = {
-        top: Math.random() * 80 + "%",
-        left: Math.random() * 80 + "%",
-      };
-      newDiceValues.push({ id: uuidv4(), value, isRed, position });
+    const ability = selectedPlayer.ability;
+
+    // Activate ability based on type
+    switch (ability.type) {
+      case "extraDice":
+        // Add extra dice
+        const newDiceValues = [];
+        for (let i = 0; i < ability.amount; i++) {
+          const value = Math.floor(Math.random() * 6) + 1;
+          const isRed = Math.random() < 0.1; // 10% chance for red dice
+          const position = {
+            top: Math.random() * 80 + "%",
+            left: Math.random() * 80 + "%",
+          };
+          newDiceValues.push({ id: uuidv4(), value, isRed, position });
+        }
+        setDiceValues((prevDiceValues) => [
+          ...prevDiceValues,
+          ...newDiceValues,
+        ]);
+        break;
+      case "healPlayer":
+        // Heal the player
+        setPlayerHealth((prevHealth) => prevHealth + ability.amount);
+        setPlayerHealAnimation(true); // Trigger heal animation
+        break;
+      case "attackEnemy":
+        // Damage all enemies by a certain amount
+        setEnemies((prevEnemies) =>
+          prevEnemies.map((enemy) => ({
+            ...enemy,
+            slots: enemy.slots.map((slot) => {
+              if (!slot.isClosed) {
+                let newValue = slot.value - ability.amount;
+                return {
+                  ...slot,
+                  value: newValue,
+                  isClosed: newValue <= 0 ? true : slot.isClosed,
+                };
+              }
+              return slot;
+            }),
+          }))
+        );
+        break;
+      default:
+        break;
     }
-    setDiceValues((prevDiceValues) => [...prevDiceValues, ...newDiceValues]);
+
+    // Consume the dice
+    setPlayerAbilityDice(null);
+    setPlayerAbilityReady(false);
   };
 
   // Function to handle dropping a dice on the companion's ability slot
@@ -271,14 +324,29 @@ const Game = () => {
     setDiceValues((prevDiceValues) =>
       prevDiceValues.filter((dice) => dice.id !== diceId)
     );
+
+    // Remove from saved dice if present
     setSavedDice((prevSavedDice) =>
       prevSavedDice.map((dice) => (dice && dice.id === diceId ? null : dice))
     );
 
-    // Activate companion's ability
-    switch (companion.ability.type) {
+    // Place the dice in the companion's ability slot
+    setCompanionAbilityDice({ id: diceId, value: diceValue, isRed });
+
+    // Enable the ability button
+    setCompanionAbilityReady(true);
+  };
+
+  // Function to handle using the companion's ability
+  const useCompanionAbility = () => {
+    if (!companionAbilityReady || !companion || !companion.ability) return;
+
+    const ability = companion.ability;
+
+    // Activate ability based on type
+    switch (ability.type) {
       case "healPlayer":
-        setPlayerHealth((prevHealth) => prevHealth + companion.ability.amount);
+        setPlayerHealth((prevHealth) => prevHealth + ability.amount);
         setPlayerHealAnimation(true); // Trigger heal animation
         break;
       case "attackEnemy":
@@ -288,7 +356,7 @@ const Game = () => {
             ...enemy,
             slots: enemy.slots.map((slot) => {
               if (!slot.isClosed) {
-                let newValue = slot.value - companion.ability.amount;
+                let newValue = slot.value - ability.amount;
                 return {
                   ...slot,
                   value: newValue,
@@ -301,14 +369,30 @@ const Game = () => {
         );
         break;
       case "healCompanion":
-        setCompanionHealth(
-          (prevHealth) => prevHealth + companion.ability.amount
-        );
+        setCompanionHealth((prevHealth) => prevHealth + ability.amount);
         setCompanionHealAnimation(true); // Trigger heal animation
         break;
       default:
         break;
     }
+
+    // Consume the dice
+    setCompanionAbilityDice(null);
+    setCompanionAbilityReady(false);
+  };
+
+  const onHealthSlotDrop = (diceId, diceValue) => {
+    // Remove the used dice
+    setDiceValues((prevDiceValues) =>
+      prevDiceValues.filter((dice) => dice.id !== diceId)
+    );
+    setSavedDice((prevSavedDice) =>
+      prevSavedDice.map((dice) => (dice && dice.id === diceId ? null : dice))
+    );
+
+    // Increase player health by dice value
+    setPlayerHealth((prevHealth) => prevHealth + diceValue);
+    setPlayerHealAnimation(true); // Trigger heal animation
   };
 
   const endTurn = () => {
@@ -325,6 +409,12 @@ const Game = () => {
       setDiceValues([]); // Clear diceValues to remove unsaved dice
       return newSavedDice;
     });
+
+    // Reset ability states
+    setPlayerAbilityReady(false);
+    setCompanionAbilityReady(false);
+    setPlayerAbilityDice(null);
+    setCompanionAbilityDice(null);
 
     // Calculate enemy attacks
     const aliveEnemies = enemies.filter((enemy) => {
@@ -517,7 +607,7 @@ const Game = () => {
     // Reset all game state variables
     setDiceValues([]);
     setDiceThrown(false);
-    setPlayerHealth(50);
+    setPlayerHealth(selectedPlayer.health);
     setPlayerCoins(0);
     setBuffs({
       extraDice: 0,
@@ -533,6 +623,14 @@ const Game = () => {
     setSavedDice([null, null, null]);
     setRollingDice([]);
     setGameStatus("playing");
+  };
+
+  // Handle player character selection
+  const selectPlayerCharacter = (player) => {
+    setSelectedPlayer(player);
+    setPlayerHealth(player.health);
+    // Move to the next step or start the game
+    // For this example, we'll enable the Start Game button after selection
   };
 
   if (showShop) {
@@ -569,9 +667,35 @@ const Game = () => {
       {gameStatus === "start" && (
         <div className="start-screen">
           <h1>Dices & Rabbits</h1>
-          <button onClick={startGame} className="start-button">
-            Start Game
-          </button>
+          <h2>Select Your Character</h2>
+          <div className="character-selection">
+            {playerData.map((player) => (
+              <div
+                key={player.id}
+                className={`character-card ${
+                  selectedPlayer && selectedPlayer.id === player.id
+                    ? "selected"
+                    : ""
+                }`}
+                onClick={() => selectPlayerCharacter(player)}
+              >
+                <img
+                  src={player.image}
+                  alt={player.name}
+                  className="character-image"
+                />
+                <h3>{player.name}</h3>
+                <p>{player.description}</p>
+                <p>Health: {player.health}</p>
+                <p>Ability: {player.ability.name}</p>
+              </div>
+            ))}
+          </div>
+          {selectedPlayer && (
+            <button onClick={startGame} className="start-button">
+              Start Game
+            </button>
+          )}
         </div>
       )}
 
@@ -627,18 +751,25 @@ const Game = () => {
                 playerCoins={playerCoins}
                 buffs={buffs}
                 collectedBuffs={collectedBuffs}
-                onHealthSlotDrop={onHealthSlotDrop}
-                onDiceChangeSlotDrop={onDiceChangeSlotDrop}
                 damageAnimation={playerDamageAnimation}
                 healAnimation={playerHealAnimation}
+                selectedPlayer={selectedPlayer}
+                onAbilitySlotDrop={onPlayerAbilitySlotDrop}
+                abilityReady={playerAbilityReady}
+                useAbility={usePlayerAbility}
+                abilityDice={playerAbilityDice}
+                onHealthSlotDrop={onHealthSlotDrop} // Added this prop
               />
               {companion && (
                 <CompanionCard
                   companion={companion}
                   companionHealth={companionHealth}
-                  onAbilitySlotDrop={onCompanionAbilitySlotDrop}
                   damageAnimation={companionDamageAnimation}
                   healAnimation={companionHealAnimation}
+                  onAbilitySlotDrop={onCompanionAbilitySlotDrop}
+                  abilityReady={companionAbilityReady}
+                  useAbility={useCompanionAbility}
+                  abilityDice={companionAbilityDice}
                 />
               )}
             </div>
@@ -691,7 +822,10 @@ const Game = () => {
         <div className="end-screen">
           <h1>Game Over!</h1>
           <p>You reached stage {currentStage}</p>
-          <button onClick={startGame} className="restart-button">
+          <button
+            onClick={() => setGameStatus("start")}
+            className="restart-button"
+          >
             Restart Game
           </button>
         </div>
@@ -701,7 +835,10 @@ const Game = () => {
         <div className="end-screen">
           <h1>Congratulations!</h1>
           <p>You have completed all stages!</p>
-          <button onClick={startGame} className="restart-button">
+          <button
+            onClick={() => setGameStatus("start")}
+            className="restart-button"
+          >
             Play Again
           </button>
         </div>

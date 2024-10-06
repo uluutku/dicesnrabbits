@@ -195,3 +195,32 @@ body {
     transform: translate(500px, -300px); /* Adjust based on actual positions */
   }
 }
+
+.character-selection {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.character-card {
+  width: 200px;
+  border: 2px solid #555;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.character-card.selected {
+  border-color: green;
+}
+
+.character-card:hover {
+  border-color: blue;
+}
+
+.character-image {
+  width: 100px;
+  height: auto;
+}

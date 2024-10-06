@@ -5,10 +5,13 @@ import "./CompanionCard.css";
 
 const CompanionCard = ({
   companion,
-  onAbilitySlotDrop,
   companionHealth,
   damageAnimation,
   healAnimation,
+  onAbilitySlotDrop,
+  abilityReady,
+  useAbility,
+  abilityDice,
 }) => {
   // Ability Slot
   const [{ isOverAbilitySlot, canDropAbilitySlot }, abilitySlotRef] = useDrop(
@@ -60,13 +63,23 @@ const CompanionCard = ({
       <div className="companion-name">{companion.name}</div>
 
       {/* Ability Slot */}
-      <div
-        ref={abilitySlotRef}
-        className={`companion-ability-slot ${
-          isOverAbilitySlot && canDropAbilitySlot ? "hover" : ""
-        } ${!canDropAbilitySlot && isOverAbilitySlot ? "invalid" : ""}`}
-      >
-        {companion.ability.slotText}
+      <div className="companion-ability-section">
+        <div
+          ref={abilitySlotRef}
+          className={`companion-ability-slot ${
+            isOverAbilitySlot && canDropAbilitySlot ? "hover" : ""
+          } ${!canDropAbilitySlot && isOverAbilitySlot ? "invalid" : ""}`}
+        >
+          {companion.ability.slotText}
+        </div>
+        <button
+          className="use-ability-button"
+          onClick={useAbility}
+          disabled={!abilityReady}
+          title={companion.ability.description}
+        >
+          {companion.ability.name}
+        </button>
       </div>
     </div>
   );

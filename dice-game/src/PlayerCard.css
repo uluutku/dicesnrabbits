@@ -123,3 +123,40 @@
     box-shadow: 0 0 20px green;
   }
 }
+
+.ability-section {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ability-slot {
+  width: 50px;
+  height: 50px;
+  border: 2px dashed #555;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  background-color: #f9f9f9;
+  position: relative;
+}
+
+.use-ability-button {
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.use-ability-button[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.use-ability-button:hover {
+  background-color: #2196f3;
+  color: white;
+}
