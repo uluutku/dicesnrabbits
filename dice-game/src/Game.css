@@ -17,6 +17,147 @@ body {
   background-repeat: no-repeat;
 }
 
+
+.startscr-start-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  padding: 10px;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  text-align: center;
+  overflow-y: auto;
+}
+
+/* Portrait Mode Overlay */
+.startscr-portrait-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e1e2f, #2c2c44);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.overlay-content {
+  text-align: center;
+  color: #ffffff;
+  font-family: 'Arial', sans-serif;
+  animation: fadeIn 1s ease-in-out;
+  transform: translateY(-10%);
+}
+
+.overlay-text {
+  margin-top: 20px;
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+.mobile-icon {
+  font-size: 4rem;
+  animation: rotateIcon 3s infinite;
+  color: #00d1b2;
+}
+
+/* Heading Styles */
+.startscr-start-screen h1 {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+.startscr-start-screen h2 {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  opacity: 0.9;
+}
+
+/* Character Selection - Optimized for Landscape */
+.startscr-character-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+/* Character Card Styles */
+.startscr-character-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: #292929;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 10px;
+  transition: border-color 0.3s, transform 0.3s;
+  width: 150px;
+  max-height: 200px;
+  cursor: pointer;
+}
+
+.startscr-character-card:hover {
+  border-color: #4caf50;
+}
+
+.startscr-character-card.selected {
+  border-color: #ff9800;
+}
+
+/* Character Image */
+.startscr-character-image {
+  width: 60%;
+  height: auto;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+/* Character Details */
+.startscr-character-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.startscr-character-details h3 {
+  font-size: 1rem;
+  margin: 0 0 5px;
+  color: #ff9800;
+}
+
+.startscr-character-details p {
+  font-size: 0.8rem;
+  margin: 2px 0;
+  color: #ccc;
+}
+
+/* Start Button */
+.startscr-start-button {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  background: linear-gradient(135deg, #4caf50, #388e3c);
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  max-width: 300px;
+  margin-top: 5px;
+}
+
+.startscr-start-button:hover {
+  background: linear-gradient(135deg, #66bb6a, #43a047);
+  transform: translateY(-2px);
+}
+
+
 .stage-info {
   text-align: center;
   margin-bottom: 20px;
@@ -37,13 +178,13 @@ body {
 
 .dice-section {
   position: absolute;
-  top: 60%;
+  top: 50%;
   left: 50%;
   width: 50vw;
   height: 10vw;
   transform: translate(-50%, -50%);
-  border: 2px solid #00000000;
-  background-color: #ffffff00;
+  border: 2px solid transparent;
+  background-color: transparent;
   border-radius: 10px;
   overflow: hidden;
   position: relative;
@@ -58,35 +199,30 @@ body {
   align-items: flex-end;
 }
 
-/* Button Styles with Enhanced Look */
+/* Tablet and Larger Screens Queries */
+@media (min-width: 1200px) {
+  .game-container {
+    height: 100vh;
+  }
+  
+  .dice-section {
+    width: 30vw;
+    height: 10vw;
+  }
+  
+  .startscr-character-selection {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
 
-/* General button styles */
-button,
-.action-button,
-.start-button,
-.restart-button {
-  padding: 12px 24px;
-  font-size: 18px;
-  font-weight: bold;
-  color: white;
-  background: linear-gradient(135deg, #4caf50, #388e3c);
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-  cursor: pointer;
-  text-transform: uppercase;
+  .starts-character-card {
+    flex-direction: column;
+    max-width: 250px;
+  }
 }
 
-/* On hover, the button "lifts" with a glow */
-button:hover,
-.action-button:hover,
-.start-button:hover,
-.restart-button:hover {
-  background: linear-gradient(135deg, #66bb6a, #43a047);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 0 10px rgba(255, 255, 255, 0.3);
-  transform: translateY(-3px);
-}
 
 /* Disabled buttons look faded */
 button:disabled,
@@ -96,17 +232,18 @@ button:disabled,
   cursor: not-allowed;
 }
 
-/* End Turn Button */
+/* End Turn and Roll Dice Button */
 .end-turn-button {
   padding: 15px 30px;
   color: white;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
   font-size: 20px;
   position: absolute;
-  top: 30%;
-  right: 10px;
-  transform: translateY(-50%);
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 12px;
 }
+
 
 /* Start and Restart Buttons */
 .start-button,
@@ -129,7 +266,8 @@ button:disabled,
 
 /* Action buttons */
 .action-button {
-  padding: 12px 24px;
+  margin-right: 50vw;
+  padding: 6px 24px;
   background: linear-gradient(135deg, #e91e63, #d81b60);
   color: white;
   border-radius: 12px;
@@ -143,18 +281,19 @@ button:disabled,
   transform: translateY(-3px);
 }
 
+
 /* Dice Storage Slots */
 .dice-storage {
   position: absolute;
   bottom: 10px;
   left: 10px;
   display: flex;
-  flex-direction: row; /* Horizontal layout */
+  flex-direction: row;
 }
 
 .saved-dice-slot {
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   border: 2px dashed #555;
   border-radius: 5px;
   background-color: #f9f9f9;
@@ -163,23 +302,6 @@ button:disabled,
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.saved-dice-slot:last-child {
-  margin-right: 0;
-}
-
-.saved-dice-slot.hover {
-  background-color: #e0ffe0;
-}
-
-.saved-dice-slot.invalid {
-  background-color: #ffe0e0;
-}
-
-/* Adjust Dice within Saved Slots */
-.saved-dice-slot .dice {
-  margin: 0;
 }
 
 .player-companion-section {
@@ -204,108 +326,49 @@ button:disabled,
   right: 10px;
   display: flex;
   align-items: center;
-  background: linear-gradient(
-    135deg,
-    #ffffff,
-    #f0f0f0
-  ); /* Subtle gradient for modern look */
+  background: linear-gradient(135deg, #ffffff, #f0f0f0);
   padding: 10px 20px;
-  border-radius: 30px; /* Rounded pill-shaped background */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Modern shadow for depth */
+  border-radius: 30px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   font-size: 18px;
   font-weight: bold;
-  color: #333; /* Darker text color for contrast */
-  transition: all 0.3s ease; /* Smooth transition */
+  color: #333;
+  transition: all 0.3s ease;
 }
 
 .coin-status:hover {
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Elevates on hover */
-  background: linear-gradient(
-    135deg,
-    #ffffff,
-    #e0e0e0
-  ); /* Slight color change on hover */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #ffffff, #e0e0e0);
 }
 
 .coin-emoji {
-  font-size: 30px; /* Emoji size for visibility */
+  font-size: 30px;
   margin-right: 10px;
-  transition: transform 0.3s ease; /* Add animation to the emoji */
+  transition: transform 0.3s ease;
 }
 
 .coin-status:hover .coin-emoji {
-  transform: rotate(20deg); /* Adds playful movement on hover */
+  transform: rotate(20deg);
 }
 
-.coin-count {
-  font-size: 20px;
-  color: #333; /* Darker, modern text color */
-}
 
-/* Start and End Screens */
-.start-screen,
-.end-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #000000ee; /* Semi-transparent black */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  z-index: 1000;
-}
-
-/* Coin Animation */
-.coin-animation {
-  position: absolute;
-  top: 40%; /* Adjust as needed */
-  left: 30%; /* Adjust as needed */
-  animation: moveCoin 1s forwards;
-}
-
-.coin-image {
-  width: 30px;
-  height: 30px;
-}
-
-@keyframes moveCoin {
-  from {
-    transform: translate(0, 0);
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20%);
   }
-  to {
-    transform: translate(60vw, -35vh); /* Adjust based on actual positions */
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.character-selection {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.character-card {
-  width: 200px;
-  border: 2px solid #555;
-  border-radius: 10px;
-  margin: 10px;
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.character-card.selected {
-  border-color: green;
-}
-
-.character-card:hover {
-  border-color: blue;
-}
-
-.character-image {
-  width: 100px;
-  height: auto;
+/* Rotate icon animation */
+@keyframes rotateIcon {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

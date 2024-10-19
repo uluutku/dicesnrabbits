@@ -12,9 +12,11 @@ import companionData from "./companionData";
 import playerData from "./playerData"; // Import player character data
 import { v4 as uuidv4 } from "uuid";
 import "./Game.css";
+import { FaMobileAlt } from 'react-icons/fa'; // Importing a mobile icon from react-icons
 
 const Game = () => {
   // State variables
+  const [isPortrait, setIsPortrait] = useState(window.innerHeight > window.innerWidth);
   const [diceValues, setDiceValues] = useState([]);
   const [diceThrown, setDiceThrown] = useState(false);
   const [playerHealth, setPlayerHealth] = useState(50);
@@ -525,6 +527,15 @@ const Game = () => {
     }
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsPortrait(window.innerHeight > window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Reset animations after they finish
   useEffect(() => {
     if (playerDamageAnimation) {
@@ -701,55 +712,64 @@ const Game = () => {
   return (
     <div className="game-container">
       {gameStatus === "start" && (
-        <div className="start-screen">
-          <h1>Dices & Rabbits</h1>
-          <h2>Karakterini Seç</h2>
-          <div className="character-selection">
-            {playerData.map((player) => (
-              <div
-                key={player.id}
-                className={`character-card ${
-                  selectedPlayer && selectedPlayer.id === player.id
-                    ? "selected"
-                    : ""
-                }`}
-                onClick={() => selectPlayerCharacter(player)}
-              >
-                <img
-                  src={player.image}
-                  alt={player.name}
-                  className="character-image"
-                />
+        <div className="startscr-start-screen">
+        {isPortrait && (
+           <div className="startscr-portrait-overlay">
+           <div className="overlay-content">
+             <FaMobileAlt className="mobile-icon" />
+             <p className="overlay-text">
+               Please rotate your device to landscape mode for the best experience.
+             </p>
+           </div>
+         </div>
+        )}
+        <h1>Dices & Rabbits</h1>
+        <h2>Karakterini Seç</h2>
+        <div className="startscr-character-selection">
+          {playerData.map((player) => (
+            <div
+              key={player.id}
+              className={`startscr-character-card ${
+                selectedPlayer && selectedPlayer.id === player.id ? 'selected' : ''
+              }`}
+              onClick={() => selectPlayerCharacter(player)}
+            >
+              <img
+                src={player.image}
+                alt={player.name}
+                className="startscr-character-image"
+              />
+              <div className="startscr-character-details">
                 <h3>{player.name}</h3>
                 <p>{player.description}</p>
                 <p>Can: {player.health}</p>
                 <p>Yetenek: {player.ability.name}</p>
               </div>
-            ))}
-          </div>
-          {selectedPlayer && (
-            <button onClick={startGame} className="start-button">
-              Oyuna Başla
-            </button>
-          )}
+            </div>
+          ))}
         </div>
+        {selectedPlayer && (
+          <button onClick={startGame} className="startscr-start-button">
+            Oyuna Başla
+          </button>
+        )}
+      </div>
       )}
-
+  
       {gameStatus === "playing" && (
         <>
-          {/* Coin Status at the top right */}
           <div className="coin-status">
             <span> 🪙 {playerCoins}</span>
           </div>
-
+  
           <p className="stage-info">Bölüm: {currentStage}</p>
-
+  
           <div className="enemy-section">
             {enemies.map((enemy) => (
               <EnemyCard key={enemy.id} enemy={enemy} onDamage={handleDamage} />
             ))}
           </div>
-
+  
           <div className="dice-section">
             {rollingDice.map((dice) => (
               <Dice
@@ -771,7 +791,7 @@ const Game = () => {
               />
             ))}
           </div>
-
+  
           <div className="player-companion-section">
             <div className="player-companion-cards">
               <PlayerCard
@@ -786,7 +806,7 @@ const Game = () => {
                 abilityReady={playerAbilityReady}
                 useAbility={usePlayerAbility}
                 abilityDice={playerAbilityDice}
-                onHealthSlotDrop={onHealthSlotDrop} // Added this prop
+                onHealthSlotDrop={onHealthSlotDrop}
               />
               {companion && (
                 <CompanionCard
@@ -802,25 +822,24 @@ const Game = () => {
                 />
               )}
             </div>
+  
+            {/* Combined Action Button */}
             <button
-              onClick={throwDice}
-              disabled={diceThrown}
+              onClick={() => {
+                if (!diceThrown) {
+                  throwDice();
+                  setDiceThrown(true);
+                } else {
+                  endTurn();
+                  setDiceThrown(false);
+                }
+              }}
               className="action-button"
             >
-              Zar At
+              {diceThrown ? "Eli Bitir" : "Zar At"}
             </button>
           </div>
-
-          <div className="end-turn-button">
-            <button
-              onClick={endTurn}
-              disabled={!diceThrown}
-              className="action-button"
-            >
-              Eli Bitir
-            </button>
-          </div>
-
+  
           {/* Dice Storage Slots */}
           <div className="dice-storage">
             {savedDice.map((dice, index) => (
@@ -833,7 +852,7 @@ const Game = () => {
               />
             ))}
           </div>
-
+  
           {/* Coin Animation */}
           {coinAnimation && (
             <div className="coin-animation">
@@ -842,7 +861,7 @@ const Game = () => {
           )}
         </>
       )}
-
+  
       {gameStatus === "gameOver" && (
         <div className="end-screen">
           <h1>Oyun bitti</h1>
@@ -855,7 +874,7 @@ const Game = () => {
           </button>
         </div>
       )}
-
+  
       {gameStatus === "gameWon" && (
         <div className="end-screen">
           <h1>Tebrikler!</h1>
