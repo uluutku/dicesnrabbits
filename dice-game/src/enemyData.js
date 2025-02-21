@@ -16,7 +16,7 @@ const enemyData = [
   },
   {
     id: "enemy2",
-    name: "Pis Kuzgun Fell",
+    name: "Kuzgun Fell",
     description: "Gak. (Ya da hak.)",
     attack: 2,
     difficulty: 1,

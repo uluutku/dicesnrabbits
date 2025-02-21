@@ -12,7 +12,7 @@ import companionData from "./companionData";
 import playerData from "./playerData"; // Import player character data
 import { v4 as uuidv4 } from "uuid";
 import "./Game.css";
-import { FaMobileAlt } from 'react-icons/fa'; // Importing a mobile icon from react-icons
+import { FaMobileAlt } from "react-icons/fa";
 
 const Game = () => {
   // State variables
@@ -32,26 +32,20 @@ const Game = () => {
   const [showCompanionShop, setShowCompanionShop] = useState(false);
   const [companion, setCompanion] = useState(null);
   const [companionHealth, setCompanionHealth] = useState(30);
-
   const [savedDice, setSavedDice] = useState([null, null, null]); // Fixed array of 3 slots
   const [rollingDice, setRollingDice] = useState([]);
-
-  // Game status: 'start', 'playing', 'gameOver', 'gameWon'
   const [gameStatus, setGameStatus] = useState("start");
 
-  // Animation state variables
+  // Animation states
   const [playerDamageAnimation, setPlayerDamageAnimation] = useState(false);
   const [playerHealAnimation, setPlayerHealAnimation] = useState(false);
-  const [companionDamageAnimation, setCompanionDamageAnimation] =
-    useState(false);
+  const [companionDamageAnimation, setCompanionDamageAnimation] = useState(false);
   const [companionHealAnimation, setCompanionHealAnimation] = useState(false);
   const [coinAnimation, setCoinAnimation] = useState(false);
 
   // Ability activation states
   const [playerAbilityReady, setPlayerAbilityReady] = useState(false);
   const [companionAbilityReady, setCompanionAbilityReady] = useState(false);
-
-  // Dice in ability slots
   const [playerAbilityDice, setPlayerAbilityDice] = useState(null);
   const [companionAbilityDice, setCompanionAbilityDice] = useState(null);
 
@@ -67,24 +61,19 @@ const Game = () => {
       !showCompanionShop
     ) {
       if (currentStage > 30) {
-        // Game won
         setGameStatus("gameWon");
       } else if (currentStage % 5 === 0 && currentStage !== 0) {
-        // Show shop every 5 stages
         setShowShop(true);
       } else {
-        // Start new stage
         startNewStage();
       }
     }
   }, [enemies, showShop, showCompanionShop, currentStage, gameStatus]);
 
   const startNewStage = () => {
-    let enemyCount = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
-
-    // For the final stage, override with the boss enemy
+    let enemyCount = Math.floor(Math.random() * 3) + 1;
     if (currentStage === 30) {
-      enemyCount = 1; // Only one boss
+      enemyCount = 1;
       const bossEnemy = getBossEnemy();
       setEnemies([bossEnemy]);
     } else {
@@ -97,29 +86,18 @@ const Game = () => {
   };
 
   const getRandomEnemy = () => {
-    // Determine difficulty based on current stage
     let difficultyLevel;
-    if (currentStage <= 10) {
-      difficultyLevel = 1; // Easy enemies
-    } else if (currentStage <= 20) {
-      difficultyLevel = 2; // Medium enemies
-    } else {
-      difficultyLevel = 3; // Hard enemies
-    }
-
-    // Filter enemies based on difficulty
+    if (currentStage <= 10) difficultyLevel = 1;
+    else if (currentStage <= 20) difficultyLevel = 2;
+    else difficultyLevel = 3;
     const availableEnemies = enemyData.filter(
       (enemy) => enemy.difficulty === difficultyLevel
     );
-
     const randomIndex = Math.floor(Math.random() * availableEnemies.length);
     const enemyTemplate = availableEnemies[randomIndex];
-
-    // Create a copy of the enemy object and assign a unique instance ID
     const enemy = {
       ...enemyTemplate,
       id: uuidv4(),
-      // Initialize slots with isClosed property
       slots: enemyTemplate.slots.map((slot) => ({ ...slot, isClosed: false })),
     };
     return enemy;
@@ -139,8 +117,7 @@ const Game = () => {
     if (!diceThrown) {
       const totalDice = 2 + buffs.extraDice;
       const newDiceValues = [];
-      const minimumDistance = 20; // Minimum distance between dice in percentage
-
+      const minimumDistance = 20;
       const generateRandomPosition = (existingPositions) => {
         let position;
         let isOverlapping;
@@ -150,16 +127,9 @@ const Game = () => {
             left: Math.random() * 60 + "%",
           };
           isOverlapping = existingPositions.some((pos) => {
-            const topDifference = Math.abs(
-              parseFloat(pos.top) - parseFloat(position.top)
-            );
-            const leftDifference = Math.abs(
-              parseFloat(pos.left) - parseFloat(position.left)
-            );
-            return (
-              topDifference < minimumDistance &&
-              leftDifference < minimumDistance
-            );
+            const topDiff = Math.abs(parseFloat(pos.top) - parseFloat(position.top));
+            const leftDiff = Math.abs(parseFloat(pos.left) - parseFloat(position.left));
+            return topDiff < minimumDistance && leftDiff < minimumDistance;
           });
         } while (isOverlapping);
         return position;
@@ -167,92 +137,71 @@ const Game = () => {
 
       for (let i = 0; i < totalDice; i++) {
         const value = Math.floor(Math.random() * 6) + 1;
-        const isRed = Math.random() < 0.15; // 15% chance for red dice
-        const position = generateRandomPosition(
-          newDiceValues.map((dice) => dice.position)
-        );
+        const isRed = Math.random() < 0.15;
+        const position = generateRandomPosition(newDiceValues.map(dice => dice.position));
         newDiceValues.push({ id: uuidv4(), value, isRed, position });
       }
 
       setRollingDice(newDiceValues);
       setDiceThrown(true);
 
-      // Simulate dice rolling animation
       setTimeout(() => {
-        setDiceValues((prevDiceValues) => [
-          ...prevDiceValues,
-          ...newDiceValues,
-        ]);
+        setDiceValues((prev) => [...prev, ...newDiceValues]);
         setRollingDice([]);
       }, 1000);
     }
   };
 
   const handleSaveDice = (diceId, slotIndex) => {
-    setDiceValues((prevDiceValues) => {
-      const diceToSave = prevDiceValues.find((dice) => dice.id === diceId);
-      if (!diceToSave) return prevDiceValues;
-      setSavedDice((prevSavedDice) => {
-        const newSavedDice = [...prevSavedDice];
-        newSavedDice[slotIndex] = diceToSave;
-        return newSavedDice;
+    setDiceValues((prev) => {
+      const diceToSave = prev.find((dice) => dice.id === diceId);
+      if (!diceToSave) return prev;
+      setSavedDice((prevSaved) => {
+        const newSaved = [...prevSaved];
+        newSaved[slotIndex] = diceToSave;
+        return newSaved;
       });
-      return prevDiceValues.filter((dice) => dice.id !== diceId);
+      return prev.filter((dice) => dice.id !== diceId);
     });
   };
 
   const retrieveSavedDice = (slotIndex) => {
     const diceToRetrieve = savedDice[slotIndex];
     if (diceToRetrieve) {
-      setDiceValues((prevDiceValues) => [...prevDiceValues, diceToRetrieve]);
-      setSavedDice((prevSavedDice) => {
-        const newSavedDice = [...prevSavedDice];
-        newSavedDice[slotIndex] = null;
-        return newSavedDice;
+      setDiceValues((prev) => [...prev, diceToRetrieve]);
+      setSavedDice((prev) => {
+        const newSaved = [...prev];
+        newSaved[slotIndex] = null;
+        return newSaved;
       });
     }
   };
 
   const handleDamage = (enemyId, slot, diceId, diceValue, diceIsRed) => {
-    // Remove the used dice
-    setDiceValues((prevDiceValues) =>
-      prevDiceValues.filter((dice) => dice.id !== diceId)
+    setDiceValues((prev) => prev.filter((dice) => dice.id !== diceId));
+    setSavedDice((prev) =>
+      prev.map((dice) => (dice && dice.id === diceId ? null : dice))
     );
-    setSavedDice((prevSavedDice) =>
-      prevSavedDice.map((dice) => (dice && dice.id === diceId ? null : dice))
-    );
-
-    // Apply effects based on slot type
     let updatedSlot = { ...slot };
     switch (slot.type) {
       case "number":
         updatedSlot.value -= diceValue;
-        if (updatedSlot.value <= 0) {
-          updatedSlot.isClosed = true;
-        }
+        if (updatedSlot.value <= 0) updatedSlot.isClosed = true;
         break;
       case "exact":
-        if (diceValue === slot.value) {
-          updatedSlot.isClosed = true;
-        }
+        if (diceValue === slot.value) updatedSlot.isClosed = true;
         break;
       case "higher":
-        if (diceValue >= slot.value) {
-          updatedSlot.isClosed = true;
-        }
+        if (diceValue >= slot.value) updatedSlot.isClosed = true;
         break;
       case "lower":
-        if (diceValue <= slot.value) {
-          updatedSlot.isClosed = true;
-        }
+        if (diceValue <= slot.value) updatedSlot.isClosed = true;
         break;
       default:
         break;
     }
-
-    // Update the enemy's slots in the enemies array
-    setEnemies((prevEnemies) =>
-      prevEnemies.map((enemy) => {
+    setEnemies((prev) =>
+      prev.map((enemy) => {
         if (enemy.id === enemyId) {
           const updatedSlots = enemy.slots.map((s) =>
             s.id === slot.id ? updatedSlot : s
@@ -264,62 +213,40 @@ const Game = () => {
     );
   };
 
-  // Function to handle dropping a dice on the player's ability slot
   const onPlayerAbilitySlotDrop = (diceId, diceValue, isRed) => {
     if (!selectedPlayer || !selectedPlayer.ability) return;
-
-    // Remove the used dice from diceValues
-    setDiceValues((prevDiceValues) =>
-      prevDiceValues.filter((dice) => dice.id !== diceId)
+    setDiceValues((prev) => prev.filter((dice) => dice.id !== diceId));
+    setSavedDice((prev) =>
+      prev.map((dice) => (dice && dice.id === diceId ? null : dice))
     );
-
-    // Remove from saved dice if present
-    setSavedDice((prevSavedDice) =>
-      prevSavedDice.map((dice) => (dice && dice.id === diceId ? null : dice))
-    );
-
-    // Place the dice in the player's ability slot
     setPlayerAbilityDice({ id: diceId, value: diceValue, isRed });
-
-    // Enable the ability button
     setPlayerAbilityReady(true);
   };
 
-  // Function to handle using the player's ability
   const usePlayerAbility = () => {
-    if (!playerAbilityReady || !selectedPlayer || !selectedPlayer.ability)
-      return;
-
+    if (!playerAbilityReady || !selectedPlayer || !selectedPlayer.ability) return;
     const ability = selectedPlayer.ability;
-
-    // Activate ability based on type
     switch (ability.type) {
       case "extraDice":
-        // Add extra dice
         const newDiceValues = [];
         for (let i = 0; i < ability.amount; i++) {
           const value = Math.floor(Math.random() * 6) + 1;
-          const isRed = Math.random() < 0.15; // 15% chance for red dice
+          const isRed = Math.random() < 0.15;
           const position = {
             top: Math.random() * 80 + "%",
             left: Math.random() * 80 + "%",
           };
           newDiceValues.push({ id: uuidv4(), value, isRed, position });
         }
-        setDiceValues((prevDiceValues) => [
-          ...prevDiceValues,
-          ...newDiceValues,
-        ]);
+        setDiceValues((prev) => [...prev, ...newDiceValues]);
         break;
       case "healPlayer":
-        // Heal the player
-        setPlayerHealth((prevHealth) => prevHealth + ability.amount);
-        setPlayerHealAnimation(true); // Trigger heal animation
+        setPlayerHealth((prev) => prev + ability.amount);
+        setPlayerHealAnimation(true);
         break;
       case "attackEnemy":
-        // Damage all enemies by a certain amount
-        setEnemies((prevEnemies) =>
-          prevEnemies.map((enemy) => ({
+        setEnemies((prev) =>
+          prev.map((enemy) => ({
             ...enemy,
             slots: enemy.slots.map((slot) => {
               if (!slot.isClosed) {
@@ -335,53 +262,34 @@ const Game = () => {
           }))
         );
         break;
-
       default:
         break;
     }
-
-    // Consume the dice
     setPlayerAbilityDice(null);
     setPlayerAbilityReady(false);
   };
 
-  // Function to handle dropping a dice on the companion's ability slot
   const onCompanionAbilitySlotDrop = (diceId, diceValue, isRed) => {
     if (!companion || !companion.ability) return;
-
-    // Remove the used dice
-    setDiceValues((prevDiceValues) =>
-      prevDiceValues.filter((dice) => dice.id !== diceId)
+    setDiceValues((prev) => prev.filter((dice) => dice.id !== diceId));
+    setSavedDice((prev) =>
+      prev.map((dice) => (dice && dice.id === diceId ? null : dice))
     );
-
-    // Remove from saved dice if present
-    setSavedDice((prevSavedDice) =>
-      prevSavedDice.map((dice) => (dice && dice.id === diceId ? null : dice))
-    );
-
-    // Place the dice in the companion's ability slot
     setCompanionAbilityDice({ id: diceId, value: diceValue, isRed });
-
-    // Enable the ability button
     setCompanionAbilityReady(true);
   };
 
-  // Function to handle using the companion's ability
   const useCompanionAbility = () => {
     if (!companionAbilityReady || !companion || !companion.ability) return;
-
     const ability = companion.ability;
-
-    // Activate ability based on type
     switch (ability.type) {
       case "healPlayer":
-        setPlayerHealth((prevHealth) => prevHealth + ability.amount);
-        setPlayerHealAnimation(true); // Trigger heal animation
+        setPlayerHealth((prev) => prev + ability.amount);
+        setPlayerHealAnimation(true);
         break;
       case "attackEnemy":
-        // Damage all enemies by a certain amount
-        setEnemies((prevEnemies) =>
-          prevEnemies.map((enemy) => ({
+        setEnemies((prev) =>
+          prev.map((enemy) => ({
             ...enemy,
             slots: enemy.slots.map((slot) => {
               if (!slot.isClosed) {
@@ -398,8 +306,8 @@ const Game = () => {
         );
         break;
       case "healCompanion":
-        setCompanionHealth((prevHealth) => prevHealth + ability.amount);
-        setCompanionHealAnimation(true); // Trigger heal animation
+        setCompanionHealth((prev) => prev + ability.amount);
+        setCompanionHealAnimation(true);
         break;
       case "dut":
         alert("Düt!");
@@ -407,119 +315,85 @@ const Game = () => {
       default:
         break;
     }
-
-    // Consume the dice
     setCompanionAbilityDice(null);
     setCompanionAbilityReady(false);
   };
 
   const onHealthSlotDrop = (diceId, diceValue) => {
-    // Remove the used dice
-    setDiceValues((prevDiceValues) =>
-      prevDiceValues.filter((dice) => dice.id !== diceId)
+    setDiceValues((prev) => prev.filter((dice) => dice.id !== diceId));
+    setSavedDice((prev) =>
+      prev.map((dice) => (dice && dice.id === diceId ? null : dice))
     );
-    setSavedDice((prevSavedDice) =>
-      prevSavedDice.map((dice) => (dice && dice.id === diceId ? null : dice))
-    );
-
-    // Increase player health by dice value
-    setPlayerHealth((prevHealth) => prevHealth + diceValue);
-    setPlayerHealAnimation(true); // Trigger heal animation
+    setPlayerHealth((prev) => prev + diceValue);
+    setPlayerHealAnimation(true);
   };
 
   const onCompanionHealthSlotDrop = (diceId, diceValue) => {
-    // Remove the used dice
-    setDiceValues((prevDiceValues) =>
-      prevDiceValues.filter((dice) => dice.id !== diceId)
+    setDiceValues((prev) => prev.filter((dice) => dice.id !== diceId));
+    setSavedDice((prev) =>
+      prev.map((dice) => (dice && dice.id === diceId ? null : dice))
     );
-    setSavedDice((prevSavedDice) =>
-      prevSavedDice.map((dice) => (dice && dice.id === diceId ? null : dice))
-    );
-
-    // Increase companion health by dice value
-    setCompanionHealth((prevHealth) => prevHealth + diceValue);
-    setCompanionHealAnimation(true); // Trigger heal animation
+    setCompanionHealth((prev) => prev + diceValue);
+    setCompanionHealAnimation(true);
   };
 
   const endTurn = () => {
-    // Automatically save unused dice if there are empty save slots
-    setSavedDice((prevSavedDice) => {
-      const newSavedDice = [...prevSavedDice];
-      let diceToSave = diceValues.slice(); // Copy of remaining dice
-      for (let i = 0; i < newSavedDice.length; i++) {
-        if (newSavedDice[i] == null && diceToSave.length > 0) {
-          newSavedDice[i] = diceToSave.shift();
+    setSavedDice((prev) => {
+      const newSaved = [...prev];
+      let diceToSave = diceValues.slice();
+      for (let i = 0; i < newSaved.length; i++) {
+        if (newSaved[i] == null && diceToSave.length > 0) {
+          newSaved[i] = diceToSave.shift();
         }
       }
-      // After saving, any remaining dice should be discarded
-      setDiceValues([]); // Clear diceValues to remove unsaved dice
-      return newSavedDice;
+      setDiceValues([]);
+      return newSaved;
     });
 
-    // Calculate enemy attacks
-    const aliveEnemies = enemies.filter((enemy) => {
-      // Enemy is alive if not all slots are closed
-      return !enemy.slots.every((slot) => slot.isClosed);
-    });
-
-    // Initialize total coins earned this turn
     let totalCoinsEarned = 0;
+    const aliveEnemies = enemies.filter(
+      (enemy) => !enemy.slots.every((slot) => slot.isClosed)
+    );
 
-    // Process each enemy's attack
     aliveEnemies.forEach((enemy) => {
-      // Randomly select target: player or companion
       const target = Math.random() < 0.5 ? "player" : "companion";
-
-      // Enemy's attack value, considering player's damage reduction buffs
       const damage = Math.max(enemy.attack - buffs.damageReduction, 0);
-
       if (target === "companion" && companion) {
-        // Attack the companion
-        setCompanionHealth((prevHealth) => {
-          const newHealth = prevHealth - damage;
-          if (damage > 0) {
-            setCompanionDamageAnimation(true);
-          }
+        setCompanionHealth((prev) => {
+          const newHealth = prev - damage;
+          if (damage > 0) setCompanionDamageAnimation(true);
           if (newHealth <= 0) {
-            // Companion is defeated
             setCompanion(null);
-            setCompanionHealth(30); // Reset companion health for next time
+            setCompanionHealth(30);
           }
           return Math.max(newHealth, 0);
         });
       } else {
-        // Attack the player
-        setPlayerHealth((prevHealth) => {
-          if (damage > 0) {
-            setPlayerDamageAnimation(true);
-          }
-          return prevHealth - damage;
+        setPlayerHealth((prev) => {
+          if (damage > 0) setPlayerDamageAnimation(true);
+          return prev - damage;
         });
       }
     });
 
-    // Remove defeated enemies and collect coins
     const survivingEnemies = [];
     enemies.forEach((enemy) => {
       const isDefeated = enemy.slots.every((slot) => slot.isClosed);
       if (isDefeated) {
-        totalCoinsEarned += enemy.coinDrop || 0; // Ensure coinDrop is a number
-        // Trigger coin animation
+        totalCoinsEarned += enemy.coinDrop || 0;
         setCoinAnimation(true);
       } else {
         survivingEnemies.push(enemy);
       }
     });
 
-    // Add earned coins to player's total coins
     if (totalCoinsEarned > 0) {
-      setPlayerCoins((prevCoins) => prevCoins + totalCoinsEarned);
+      setPlayerCoins((prev) => prev + totalCoinsEarned);
     }
 
-    // Update the enemies state
     if (survivingEnemies.length === 0) {
-      setCurrentStage((prevStage) => prevStage + 1);
-      setEnemies([]); // Clear enemies to trigger useEffect
+      setCurrentStage((prev) => prev + 1);
+      setEnemies([]);
       setDiceThrown(false);
     } else {
       setEnemies(survivingEnemies);
@@ -528,15 +402,11 @@ const Game = () => {
   };
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsPortrait(window.innerHeight > window.innerWidth);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const handleResize = () => setIsPortrait(window.innerHeight > window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Reset animations after they finish
   useEffect(() => {
     if (playerDamageAnimation) {
       const timer = setTimeout(() => setPlayerDamageAnimation(false), 500);
@@ -572,7 +442,6 @@ const Game = () => {
     }
   }, [coinAnimation]);
 
-  // Handle game over and game won conditions
   useEffect(() => {
     if (playerHealth <= 0) {
       setGameStatus("gameOver");
@@ -582,37 +451,23 @@ const Game = () => {
   }, [playerHealth, currentStage]);
 
   const handleBuffSelection = (selectedBuff) => {
-    // Check if the player has enough coins
     if (playerCoins >= selectedBuff.cost) {
-      // Deduct the cost
-      setPlayerCoins((prevCoins) => prevCoins - selectedBuff.cost);
-
-      // Apply the selected buff
+      setPlayerCoins((prev) => prev - selectedBuff.cost);
       switch (selectedBuff.type) {
         case "extraDice":
-          setBuffs((prevBuffs) => ({
-            ...prevBuffs,
-            extraDice: prevBuffs.extraDice + 1,
-          }));
+          setBuffs((prev) => ({ ...prev, extraDice: prev.extraDice + 1 }));
           break;
         case "heal":
-          setPlayerHealth((prevHealth) => prevHealth + selectedBuff.amount);
+          setPlayerHealth((prev) => prev + selectedBuff.amount);
           setPlayerHealAnimation(true);
           break;
         case "damageReduction":
-          setBuffs((prevBuffs) => ({
-            ...prevBuffs,
-            damageReduction: prevBuffs.damageReduction + selectedBuff.amount,
-          }));
+          setBuffs((prev) => ({ ...prev, damageReduction: prev.damageReduction + selectedBuff.amount }));
           break;
         default:
           break;
       }
-
-      // Add the buff to collected buffs for display
-      setCollectedBuffs((prevBuffs) => [...prevBuffs, selectedBuff]);
-
-      // Close the shop and open the companion shop
+      setCollectedBuffs((prev) => [...prev, selectedBuff]);
       setShowShop(false);
       setShowCompanionShop(true);
     } else {
@@ -621,16 +476,10 @@ const Game = () => {
   };
 
   const handleCompanionSelection = (selectedCompanion) => {
-    // Check if the player has enough coins
     if (playerCoins >= selectedCompanion.cost) {
-      // Deduct the cost
-      setPlayerCoins((prevCoins) => prevCoins - selectedCompanion.cost);
-
-      // Set the new companion
+      setPlayerCoins((prev) => prev - selectedCompanion.cost);
       setCompanion(selectedCompanion);
-      setCompanionHealth(30); // Reset companion health
-
-      // Close the companion shop and start the next stage
+      setCompanionHealth(30);
       setShowCompanionShop(false);
       startNewStage();
     } else {
@@ -638,30 +487,12 @@ const Game = () => {
     }
   };
 
-  const getDifficultyLabel = () => {
-    if (currentStage <= 10) {
-      return "Easy";
-    } else if (currentStage <= 20) {
-      return "Medium";
-    } else if (currentStage <= 29) {
-      return "Hard";
-    } else if (currentStage === 30) {
-      return "Boss";
-    } else {
-      return "";
-    }
-  };
-
   const startGame = () => {
-    // Reset all game state variables
     setDiceValues([]);
     setDiceThrown(false);
     setPlayerHealth(selectedPlayer.health);
     setPlayerCoins(0);
-    setBuffs({
-      extraDice: 0,
-      damageReduction: 0,
-    });
+    setBuffs({ extraDice: 0, damageReduction: 0 });
     setCollectedBuffs([]);
     setEnemies([]);
     setCurrentStage(1);
@@ -674,16 +505,58 @@ const Game = () => {
     setGameStatus("playing");
   };
 
-  // Handle player character selection
   const selectPlayerCharacter = (player) => {
     setSelectedPlayer(player);
     setPlayerHealth(player.health);
   };
 
+  // Modern card–themed character selection screen (texts in Turkish except game name)
+  if (gameStatus === "start") {
+    return (
+      <div className="modern-character-selection-screen">
+        {isPortrait && (
+          <div className="portrait-warning">
+            <FaMobileAlt className="mobile-icon" />
+            <p>En iyi deneyim için lütfen cihazınızı yatay moda çevirin.</p>
+          </div>
+        )}
+        <header className="selection-header">
+          <h1 className="game-title">Dices & Rabbits</h1>
+          <h2 className="selection-subtitle">Şampiyonunu Seç</h2>
+        </header>
+        <div className="character-grid">
+          {playerData.map((player) => (
+            <div
+              key={player.id}
+              className={`character-card ${selectedPlayer && selectedPlayer.id === player.id ? "selected" : ""}`}
+              onClick={() => selectPlayerCharacter(player)}
+            >
+              <div className="card-image">
+                <img src={player.image} alt={player.name} />
+              </div>
+              <div className="card-details">
+                <h3>{player.name}</h3>
+                <p className="description">{player.description}</p>
+                <div className="stats">
+                  <span>Can: {player.health}</span>
+                  <span>Yetenek: {player.ability.name}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        {selectedPlayer && (
+          <button className="start-game-button" onClick={startGame}>
+            Oyuna Başla
+          </button>
+        )}
+      </div>
+    );
+  }
+
   if (showShop) {
     return (
       <div className="game-container">
-        {/* Coin Status at the top right */}
         <div className="coin-status">
           <img src="/images/coin_icon.png" alt="Coins" className="coin-icon" />
           <span>{playerCoins}</span>
@@ -696,80 +569,28 @@ const Game = () => {
   if (showCompanionShop) {
     return (
       <div className="game-container">
-        {/* Coin Status at the top right */}
         <div className="coin-status">
           <img src="/images/coin_icon.png" alt="Coins" className="coin-icon" />
           <span>{playerCoins}</span>
         </div>
-        <CompanionShop
-          onSelectCompanion={handleCompanionSelection}
-          playerCoins={playerCoins}
-        />
+        <CompanionShop onSelectCompanion={handleCompanionSelection} playerCoins={playerCoins} />
       </div>
     );
   }
 
   return (
     <div className="game-container">
-      {gameStatus === "start" && (
-        <div className="startscr-start-screen">
-        {isPortrait && (
-           <div className="startscr-portrait-overlay">
-           <div className="overlay-content">
-             <FaMobileAlt className="mobile-icon" />
-             <p className="overlay-text">
-               Please rotate your device to landscape mode for the best experience.
-             </p>
-           </div>
-         </div>
-        )}
-        <h1>Dices & Rabbits</h1>
-        <h2>Karakterini Seç</h2>
-        <div className="startscr-character-selection">
-          {playerData.map((player) => (
-            <div
-              key={player.id}
-              className={`startscr-character-card ${
-                selectedPlayer && selectedPlayer.id === player.id ? 'selected' : ''
-              }`}
-              onClick={() => selectPlayerCharacter(player)}
-            >
-              <img
-                src={player.image}
-                alt={player.name}
-                className="startscr-character-image"
-              />
-              <div className="startscr-character-details">
-                <h3>{player.name}</h3>
-                <p>{player.description}</p>
-                <p>Can: {player.health}</p>
-                <p>Yetenek: {player.ability.name}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        {selectedPlayer && (
-          <button onClick={startGame} className="startscr-start-button">
-            Oyuna Başla
-          </button>
-        )}
-      </div>
-      )}
-  
       {gameStatus === "playing" && (
         <>
           <div className="coin-status">
-            <span> 🪙 {playerCoins}</span>
+            <span>🪙 {playerCoins}</span>
           </div>
-  
           <p className="stage-info">Bölüm: {currentStage}</p>
-  
           <div className="enemy-section">
             {enemies.map((enemy) => (
               <EnemyCard key={enemy.id} enemy={enemy} onDamage={handleDamage} />
             ))}
           </div>
-  
           <div className="dice-section">
             {rollingDice.map((dice) => (
               <Dice
@@ -791,7 +612,6 @@ const Game = () => {
               />
             ))}
           </div>
-  
           <div className="player-companion-section">
             <div className="player-companion-cards">
               <PlayerCard
@@ -822,25 +642,21 @@ const Game = () => {
                 />
               )}
             </div>
-  
-            {/* Combined Action Button */}
-            <button
-              onClick={() => {
-                if (!diceThrown) {
-                  throwDice();
-                  setDiceThrown(true);
-                } else {
-                  endTurn();
-                  setDiceThrown(false);
-                }
-              }}
-              className="action-button"
-            >
-              {diceThrown ? "Eli Bitir" : "Zar At"}
-            </button>
           </div>
-  
-          {/* Dice Storage Slots */}
+          <button
+            onClick={() => {
+              if (!diceThrown) {
+                throwDice();
+                setDiceThrown(true);
+              } else {
+                endTurn();
+                setDiceThrown(false);
+              }
+            }}
+            className="throw-dice-button"
+          >
+            {diceThrown ? "Eli Bitir" : "Zar At"}
+          </button>
           <div className="dice-storage">
             {savedDice.map((dice, index) => (
               <SavedDiceSlot
@@ -852,8 +668,6 @@ const Game = () => {
               />
             ))}
           </div>
-  
-          {/* Coin Animation */}
           {coinAnimation && (
             <div className="coin-animation">
               <span>🪙</span>
@@ -861,28 +675,22 @@ const Game = () => {
           )}
         </>
       )}
-  
+
       {gameStatus === "gameOver" && (
         <div className="end-screen">
-          <h1>Oyun bitti</h1>
-          <p>{currentStage} bölümüne kadar ilerledin.</p>
-          <button
-            onClick={() => setGameStatus("start")}
-            className="restart-button"
-          >
+          <h1>Oyun Bitti</h1>
+          <p>{currentStage} bölüme kadar ilerledin.</p>
+          <button onClick={() => setGameStatus("start")} className="restart-button">
             Yeniden Başla
           </button>
         </div>
       )}
-  
+
       {gameStatus === "gameWon" && (
         <div className="end-screen">
           <h1>Tebrikler!</h1>
           <p>Tüm bölümleri tamamladın!</p>
-          <button
-            onClick={() => setGameStatus("start")}
-            className="restart-button"
-          >
+          <button onClick={() => setGameStatus("start")} className="restart-button">
             Yeniden Başla
           </button>
         </div>

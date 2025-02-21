@@ -9,6 +9,7 @@
   background-color: #e0e0ff; /* Unique color for companion */
   text-align: center;
   position: relative;
+  color: #555;
 }
 
 .companion-health-slot {
