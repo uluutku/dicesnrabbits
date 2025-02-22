@@ -24,6 +24,7 @@
   align-items: center;
   justify-content: center;
   background-color: #f0f0ff;
+  color: #555;
   font-weight: bold;
 }
 
@@ -40,6 +41,7 @@
 .companion-name {
   margin-top: 10px;
   font-weight: bold;
+  color: #555;
 }
 
 .companion-ability-slot {
@@ -54,6 +56,7 @@
   font-weight: bold;
   background-color: #f0f0ff;
   position: relative;
+  color: #555;
 }
 
 .hover {

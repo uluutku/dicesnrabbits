@@ -9,6 +9,7 @@
   background-color: #e0ffe0; /* Retained unique color for player */
   text-align: center;
   position: relative;
+  color: #555;
 }
 
 .health-slot {
@@ -24,6 +25,7 @@
   justify-content: center;
   background-color: #f9f9f9;
   font-weight: bold;
+  color: #555;
 }
 
 .avatar-image {
@@ -65,7 +67,7 @@
 }
 
 .invalid {
-  background-color: #ffe0e0;
+  background-color: #ff0000;
 }
 
 .health-slot.hover,
