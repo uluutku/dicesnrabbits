@@ -12,6 +12,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer; /* Add cursor pointer for clickable slots */
+  color: #555;
 }
 
 .saved-dice-slot:last-child {

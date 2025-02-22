@@ -13,6 +13,7 @@
   background-color: #f9f9f9;
   position: relative;
   transition: background-color 0.3s;
+  color: #555;
 }
 
 .slot.closed {
